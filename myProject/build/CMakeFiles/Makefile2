@@ -81,12 +81,12 @@ clean: CMakeFiles/GraphicsStuff.dir/clean
 CMakeFiles/GraphicsStuff.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/GraphicsStuff.dir/build.make CMakeFiles/GraphicsStuff.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/GraphicsStuff.dir/build.make CMakeFiles/GraphicsStuff.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/hiatus/Documents/OPENGLPROJECT/myProject/build/CMakeFiles --progress-num=1,2 "Built target GraphicsStuff"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/hiatus/Documents/OPENGLPROJECT/myProject/build/CMakeFiles --progress-num=1,2,3 "Built target GraphicsStuff"
 .PHONY : CMakeFiles/GraphicsStuff.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/GraphicsStuff.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/hiatus/Documents/OPENGLPROJECT/myProject/build/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/hiatus/Documents/OPENGLPROJECT/myProject/build/CMakeFiles 3
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/GraphicsStuff.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/hiatus/Documents/OPENGLPROJECT/myProject/build/CMakeFiles 0
 .PHONY : CMakeFiles/GraphicsStuff.dir/rule

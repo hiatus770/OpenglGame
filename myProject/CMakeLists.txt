@@ -4,6 +4,7 @@ project(GraphicsStuff)
 # Add executable target
 add_executable(${PROJECT_NAME} 
     src/main.cpp 
+    src/glad.c
 )
 
 target_include_directories(
