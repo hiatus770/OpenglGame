@@ -1,3 +1,0 @@
-/home/hiatus/Documents/OPENGLPROJECT/build/CMakeFiles/GraphicsStuff.dir
-/home/hiatus/Documents/OPENGLPROJECT/build/CMakeFiles/edit_cache.dir
-/home/hiatus/Documents/OPENGLPROJECT/build/CMakeFiles/rebuild_cache.dir
