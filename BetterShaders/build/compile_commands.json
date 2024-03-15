@@ -1,0 +1,14 @@
+[
+{
+  "directory": "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/build",
+  "command": "/usr/bin/g++ -I/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/include -I/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/GraphicsStuff -g -o CMakeFiles/GraphicsStuff.dir/src/main.cpp.o -c /home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/main.cpp",
+  "file": "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/main.cpp",
+  "output": "CMakeFiles/GraphicsStuff.dir/src/main.cpp.o"
+},
+{
+  "directory": "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/build",
+  "command": "/usr/bin/gcc -I/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/include -I/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/GraphicsStuff -g -o CMakeFiles/GraphicsStuff.dir/src/glad.c.o -c /home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/glad.c",
+  "file": "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/glad.c",
+  "output": "CMakeFiles/GraphicsStuff.dir/src/glad.c.o"
+}
+]

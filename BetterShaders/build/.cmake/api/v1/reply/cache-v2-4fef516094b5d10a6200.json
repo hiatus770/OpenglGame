@@ -55,7 +55,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/hiatus/Documents/OPENGLPROJECT/build"
+			"value" : "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/build"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -539,7 +539,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/home/hiatus/Documents/OPENGLPROJECT/build/CMakeFiles/pkgRedirects"
+			"value" : "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/build/CMakeFiles/pkgRedirects"
 		},
 		{
 			"name" : "CMAKE_GENERATOR",
@@ -599,7 +599,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/hiatus/Documents/OPENGLPROJECT/myProject"
+			"value" : "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders"
 		},
 		{
 			"name" : "CMAKE_INSTALL_PREFIX",
@@ -1151,7 +1151,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/home/hiatus/Documents/OPENGLPROJECT/build"
+			"value" : "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/build"
 		},
 		{
 			"name" : "GraphicsStuff_IS_TOP_LEVEL",
@@ -1175,7 +1175,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/home/hiatus/Documents/OPENGLPROJECT/myProject"
+			"value" : "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders"
 		},
 		{
 			"name" : "_CMAKE_LINKER_PUSHPOP_STATE_SUPPORTED",

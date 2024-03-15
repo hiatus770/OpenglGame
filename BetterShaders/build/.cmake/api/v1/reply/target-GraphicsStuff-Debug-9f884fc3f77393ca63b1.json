@@ -32,13 +32,13 @@
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 17,
+				"line" : 18,
 				"parent" : 0
 			},
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 10,
+				"line" : 11,
 				"parent" : 0
 			}
 		]
@@ -56,11 +56,11 @@
 			[
 				{
 					"backtrace" : 3,
-					"path" : "/home/hiatus/Documents/OPENGLPROJECT/myProject/include"
+					"path" : "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/include"
 				},
 				{
 					"backtrace" : 3,
-					"path" : "/home/hiatus/Documents/OPENGLPROJECT/myProject/GraphicsStuff"
+					"path" : "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/GraphicsStuff"
 				}
 			],
 			"language" : "CXX",
@@ -80,11 +80,11 @@
 			[
 				{
 					"backtrace" : 3,
-					"path" : "/home/hiatus/Documents/OPENGLPROJECT/myProject/include"
+					"path" : "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/include"
 				},
 				{
 					"backtrace" : 3,
-					"path" : "/home/hiatus/Documents/OPENGLPROJECT/myProject/GraphicsStuff"
+					"path" : "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/GraphicsStuff"
 				}
 			],
 			"language" : "C",
@@ -141,6 +141,13 @@
 				0,
 				1
 			]
+		},
+		{
+			"name" : "Header Files",
+			"sourceIndexes" : 
+			[
+				2
+			]
 		}
 	],
 	"sources" : 
@@ -156,6 +163,11 @@
 			"compileGroupIndex" : 1,
 			"path" : "src/glad.c",
 			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/shader.h",
+			"sourceGroupIndex" : 1
 		}
 	],
 	"type" : "EXECUTABLE"
