@@ -73,6 +73,8 @@ CMakeFiles/GraphicsStuff.dir/src/glad.c.o: /home/hiatus/Documents/OPENGLPROJECT/
 CMakeFiles/GraphicsStuff.dir/src/main.cpp.o: /home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/main.cpp \
   /home/hiatus/Documents/OPENGLPROJECT/BetterShaders/include/KHR/khrplatform.h \
   /home/hiatus/Documents/OPENGLPROJECT/BetterShaders/include/glad/glad.h \
+  /home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/object.h \
+  /home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shader.h \
   /usr/include/GLFW/glfw3.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/errno-base.h \
@@ -149,6 +151,7 @@ CMakeFiles/GraphicsStuff.dir/src/main.cpp.o: /home/hiatus/Documents/OPENGLPROJEC
   /usr/include/c++/13.2.1/bits/basic_string.tcc \
   /usr/include/c++/13.2.1/bits/char_traits.h \
   /usr/include/c++/13.2.1/bits/charconv.h \
+  /usr/include/c++/13.2.1/bits/codecvt.h \
   /usr/include/c++/13.2.1/bits/concept_check.h \
   /usr/include/c++/13.2.1/bits/cpp_type_traits.h \
   /usr/include/c++/13.2.1/bits/cxxabi_forced.h \
@@ -156,6 +159,7 @@ CMakeFiles/GraphicsStuff.dir/src/main.cpp.o: /home/hiatus/Documents/OPENGLPROJEC
   /usr/include/c++/13.2.1/bits/exception.h \
   /usr/include/c++/13.2.1/bits/exception_defines.h \
   /usr/include/c++/13.2.1/bits/exception_ptr.h \
+  /usr/include/c++/13.2.1/bits/fstream.tcc \
   /usr/include/c++/13.2.1/bits/functexcept.h \
   /usr/include/c++/13.2.1/bits/functional_hash.h \
   /usr/include/c++/13.2.1/bits/hash_bytes.h \
@@ -180,14 +184,18 @@ CMakeFiles/GraphicsStuff.dir/src/main.cpp.o: /home/hiatus/Documents/OPENGLPROJEC
   /usr/include/c++/13.2.1/bits/range_access.h \
   /usr/include/c++/13.2.1/bits/refwrap.h \
   /usr/include/c++/13.2.1/bits/requires_hosted.h \
+  /usr/include/c++/13.2.1/bits/sstream.tcc \
   /usr/include/c++/13.2.1/bits/std_abs.h \
   /usr/include/c++/13.2.1/bits/stl_algobase.h \
+  /usr/include/c++/13.2.1/bits/stl_bvector.h \
   /usr/include/c++/13.2.1/bits/stl_construct.h \
   /usr/include/c++/13.2.1/bits/stl_function.h \
   /usr/include/c++/13.2.1/bits/stl_iterator.h \
   /usr/include/c++/13.2.1/bits/stl_iterator_base_funcs.h \
   /usr/include/c++/13.2.1/bits/stl_iterator_base_types.h \
   /usr/include/c++/13.2.1/bits/stl_pair.h \
+  /usr/include/c++/13.2.1/bits/stl_uninitialized.h \
+  /usr/include/c++/13.2.1/bits/stl_vector.h \
   /usr/include/c++/13.2.1/bits/streambuf.tcc \
   /usr/include/c++/13.2.1/bits/streambuf_iterator.h \
   /usr/include/c++/13.2.1/bits/string_view.tcc \
@@ -195,6 +203,7 @@ CMakeFiles/GraphicsStuff.dir/src/main.cpp.o: /home/hiatus/Documents/OPENGLPROJEC
   /usr/include/c++/13.2.1/bits/uses_allocator.h \
   /usr/include/c++/13.2.1/bits/uses_allocator_args.h \
   /usr/include/c++/13.2.1/bits/utility.h \
+  /usr/include/c++/13.2.1/bits/vector.tcc \
   /usr/include/c++/13.2.1/cctype \
   /usr/include/c++/13.2.1/cerrno \
   /usr/include/c++/13.2.1/clocale \
@@ -211,6 +220,7 @@ CMakeFiles/GraphicsStuff.dir/src/main.cpp.o: /home/hiatus/Documents/OPENGLPROJEC
   /usr/include/c++/13.2.1/ext/numeric_traits.h \
   /usr/include/c++/13.2.1/ext/string_conversions.h \
   /usr/include/c++/13.2.1/ext/type_traits.h \
+  /usr/include/c++/13.2.1/fstream \
   /usr/include/c++/13.2.1/initializer_list \
   /usr/include/c++/13.2.1/ios \
   /usr/include/c++/13.2.1/iosfwd \
@@ -219,6 +229,7 @@ CMakeFiles/GraphicsStuff.dir/src/main.cpp.o: /home/hiatus/Documents/OPENGLPROJEC
   /usr/include/c++/13.2.1/new \
   /usr/include/c++/13.2.1/ostream \
   /usr/include/c++/13.2.1/pstl/pstl_config.h \
+  /usr/include/c++/13.2.1/sstream \
   /usr/include/c++/13.2.1/stdexcept \
   /usr/include/c++/13.2.1/streambuf \
   /usr/include/c++/13.2.1/string \
@@ -227,9 +238,12 @@ CMakeFiles/GraphicsStuff.dir/src/main.cpp.o: /home/hiatus/Documents/OPENGLPROJEC
   /usr/include/c++/13.2.1/tuple \
   /usr/include/c++/13.2.1/type_traits \
   /usr/include/c++/13.2.1/typeinfo \
+  /usr/include/c++/13.2.1/vector \
   /usr/include/c++/13.2.1/x86_64-pc-linux-gnu/bits/atomic_word.h \
+  /usr/include/c++/13.2.1/x86_64-pc-linux-gnu/bits/basic_file.h \
   /usr/include/c++/13.2.1/x86_64-pc-linux-gnu/bits/c++allocator.h \
   /usr/include/c++/13.2.1/x86_64-pc-linux-gnu/bits/c++config.h \
+  /usr/include/c++/13.2.1/x86_64-pc-linux-gnu/bits/c++io.h \
   /usr/include/c++/13.2.1/x86_64-pc-linux-gnu/bits/c++locale.h \
   /usr/include/c++/13.2.1/x86_64-pc-linux-gnu/bits/cpu_defines.h \
   /usr/include/c++/13.2.1/x86_64-pc-linux-gnu/bits/ctype_base.h \
@@ -289,15 +303,21 @@ CMakeFiles/GraphicsStuff.dir/src/main.cpp.o: /home/hiatus/Documents/OPENGLPROJEC
 
 /usr/include/c++/13.2.1/x86_64-pc-linux-gnu/bits/ctype_base.h:
 
-/usr/include/c++/13.2.1/x86_64-pc-linux-gnu/bits/c++locale.h:
+/usr/include/c++/13.2.1/x86_64-pc-linux-gnu/bits/c++io.h:
 
 /usr/include/c++/13.2.1/x86_64-pc-linux-gnu/bits/c++config.h:
 
 /usr/include/c++/13.2.1/x86_64-pc-linux-gnu/bits/c++allocator.h:
 
+/usr/include/c++/13.2.1/x86_64-pc-linux-gnu/bits/basic_file.h:
+
+/usr/include/c++/13.2.1/vector:
+
 /usr/include/c++/13.2.1/streambuf:
 
 /usr/include/c++/13.2.1/stdexcept:
+
+/usr/include/c++/13.2.1/sstream:
 
 /usr/include/c++/13.2.1/pstl/pstl_config.h:
 
@@ -309,11 +329,13 @@ CMakeFiles/GraphicsStuff.dir/src/main.cpp.o: /home/hiatus/Documents/OPENGLPROJEC
 
 /usr/include/c++/13.2.1/initializer_list:
 
+/usr/include/c++/13.2.1/x86_64-pc-linux-gnu/bits/c++locale.h:
+
+/usr/include/c++/13.2.1/fstream:
+
 /usr/include/c++/13.2.1/ext/type_traits.h:
 
 /usr/include/c++/13.2.1/ext/string_conversions.h:
-
-/usr/include/c++/13.2.1/ext/numeric_traits.h:
 
 /usr/include/c++/13.2.1/ext/atomicity.h:
 
@@ -323,13 +345,7 @@ CMakeFiles/GraphicsStuff.dir/src/main.cpp.o: /home/hiatus/Documents/OPENGLPROJEC
 
 /usr/include/c++/13.2.1/cwchar:
 
-/usr/include/c++/13.2.1/iosfwd:
-
-/usr/include/c++/13.2.1/cstdlib:
-
 /usr/include/c++/13.2.1/cctype:
-
-/usr/include/c++/13.2.1/bits/uses_allocator.h:
 
 /usr/include/c++/13.2.1/bits/stringfwd.h:
 
@@ -337,7 +353,11 @@ CMakeFiles/GraphicsStuff.dir/src/main.cpp.o: /home/hiatus/Documents/OPENGLPROJEC
 
 /usr/include/c++/13.2.1/bits/stl_function.h:
 
+/usr/include/c++/13.2.1/bits/stl_vector.h:
+
 /usr/include/c++/13.2.1/bits/stl_construct.h:
+
+/usr/include/c++/13.2.1/bits/stl_bvector.h:
 
 /usr/include/c++/13.2.1/bits/stl_algobase.h:
 
@@ -345,15 +365,37 @@ CMakeFiles/GraphicsStuff.dir/src/main.cpp.o: /home/hiatus/Documents/OPENGLPROJEC
 
 /usr/include/c++/13.2.1/bits/refwrap.h:
 
+/usr/include/c++/13.2.1/cstddef:
+
+/usr/include/c++/13.2.1/bits/ptr_traits.h:
+
+/usr/include/c++/13.2.1/bits/streambuf.tcc:
+
+/usr/include/c++/13.2.1/bits/postypes.h:
+
+/usr/include/c++/13.2.1/string:
+
+/usr/include/c++/13.2.1/bits/ostream_insert.h:
+
 /usr/include/stdio.h:
 
 /usr/include/bits/types/timer_t.h:
 
 /usr/include/stdint.h:
 
+/usr/include/c++/13.2.1/ext/numeric_traits.h:
+
+/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shader.h:
+
 /usr/include/dlfcn.h:
 
 /usr/include/bits/types/wint_t.h:
+
+/usr/include/c++/13.2.1/iosfwd:
+
+/usr/include/c++/13.2.1/cstdlib:
+
+/usr/include/c++/13.2.1/bits/codecvt.h:
 
 /usr/include/endian.h:
 
@@ -371,15 +413,13 @@ CMakeFiles/GraphicsStuff.dir/src/main.cpp.o: /home/hiatus/Documents/OPENGLPROJEC
 
 /usr/include/bits/types/struct_timeval.h:
 
-/usr/include/c++/13.2.1/string:
-
-/usr/include/c++/13.2.1/bits/ostream_insert.h:
-
 /usr/include/bits/types/struct_timespec.h:
 
 /usr/include/bits/types/struct_FILE.h:
 
 /usr/include/c++/13.2.1/bits/exception_defines.h:
+
+/usr/include/c++/13.2.1/bits/vector.tcc:
 
 /usr/include/c++/13.2.1/bits/std_abs.h:
 
@@ -449,6 +489,8 @@ CMakeFiles/GraphicsStuff.dir/src/main.cpp.o: /home/hiatus/Documents/OPENGLPROJEC
 
 /usr/include/c++/13.2.1/string_view:
 
+/usr/include/c++/13.2.1/bits/stl_uninitialized.h:
+
 /usr/include/bits/types/clockid_t.h:
 
 /usr/include/bits/atomic_wide_counter.h:
@@ -505,6 +547,8 @@ CMakeFiles/GraphicsStuff.dir/src/main.cpp.o: /home/hiatus/Documents/OPENGLPROJEC
 
 /usr/include/bits/stdint-least.h:
 
+/usr/include/c++/13.2.1/bits/sstream.tcc:
+
 /usr/include/c++/13.2.1/bits/predefined_ops.h:
 
 /usr/include/bits/wchar.h:
@@ -557,7 +601,15 @@ CMakeFiles/GraphicsStuff.dir/src/main.cpp.o: /home/hiatus/Documents/OPENGLPROJEC
 
 /usr/include/asm-generic/errno-base.h:
 
+/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/object.h:
+
 /usr/include/asm-generic/errno.h:
+
+/usr/include/wctype.h:
+
+/usr/include/bits/timex.h:
+
+/usr/include/bits/errno.h:
 
 /usr/include/bits/locale.h:
 
@@ -580,12 +632,6 @@ CMakeFiles/GraphicsStuff.dir/src/main.cpp.o: /home/hiatus/Documents/OPENGLPROJEC
 /usr/include/c++/13.2.1/bits/alloc_traits.h:
 
 /usr/include/c++/13.2.1/bits/basic_string.h:
-
-/usr/include/wctype.h:
-
-/usr/include/bits/errno.h:
-
-/usr/include/bits/timex.h:
 
 /usr/include/bits/types/mbstate_t.h:
 
@@ -627,17 +673,17 @@ CMakeFiles/GraphicsStuff.dir/src/main.cpp.o: /home/hiatus/Documents/OPENGLPROJEC
 
 /usr/include/c++/13.2.1/bits/exception.h:
 
-/usr/include/c++/13.2.1/cstddef:
-
-/usr/include/c++/13.2.1/bits/ptr_traits.h:
-
 /usr/include/c++/13.2.1/bits/exception_ptr.h:
+
+/usr/include/c++/13.2.1/bits/uses_allocator.h:
+
+/usr/include/c++/13.2.1/bits/fstream.tcc:
+
+/usr/include/c++/13.2.1/bits/invoke.h:
 
 /usr/include/linux/errno.h:
 
 /usr/include/c++/13.2.1/bits/hash_bytes.h:
-
-/usr/include/c++/13.2.1/bits/invoke.h:
 
 /usr/include/c++/13.2.1/bits/locale_classes.h:
 
@@ -656,7 +702,3 @@ CMakeFiles/GraphicsStuff.dir/src/main.cpp.o: /home/hiatus/Documents/OPENGLPROJEC
 /usr/include/c++/13.2.1/bits/locale_classes.tcc:
 
 /usr/include/c++/13.2.1/bits/memoryfwd.h:
-
-/usr/include/c++/13.2.1/bits/streambuf.tcc:
-
-/usr/include/c++/13.2.1/bits/postypes.h:

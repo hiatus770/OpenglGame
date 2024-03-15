@@ -5,6 +5,7 @@ project(GraphicsStuff)
 add_executable(${PROJECT_NAME} 
     src/main.cpp 
     src/glad.c
+    src/shader.h
 )
 
 target_include_directories(

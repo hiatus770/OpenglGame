@@ -1,6 +1,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include "shader.h" 
+#include "object.h" 
 
 const int SRC_WIDTH = 800;
 const int SRC_HEIGHT = 600;
@@ -16,15 +18,6 @@ float vertices[] = {
     0.5f, -0.5f, 0.0f,
     0.0f, 0.5f, 0.0f};
 
-const char *vertexShaderSource = "#version 330 core\n"
-                                 "layout (location = 0) in vec3 aPos;\n"
-                                 "void main()\n"
-                                 "{\n"
-                                 "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-                                 "}\0";
-
-const char *fragmentShaderSource = "#version 330 core\nout vec4 FragColor;\nvoid main()\n{FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);}"; 
-
 int main()
 {
     std::cout << "Making Window!" << std::endl;
@@ -33,13 +26,9 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);                 // The minor version of GLFW we are using so x.x the second x
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // This means we do not use any backwards compatible features, so its a smaller set of all of OPENGL
 
-// Need this to run on apple devices
-#ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
-
     // Creating the window object
     GLFWwindow *window = glfwCreateWindow(SRC_WIDTH, SRC_HEIGHT, "Better Shaders", NULL, NULL);
+
 
     // If it wasn't created then we stop here
     if (window == NULL)
@@ -61,49 +50,15 @@ int main()
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 
-    // SHADER STUFF
-    unsigned int vertexShader;
-    vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glCompileShader(vertexShader);
+    Object object({-0.75, -0.75, 0, 0.75, 0.75, 0, 0, -0.75, 0, 0.1, 0.35, 0}, {1.0, 0, 0, 1.0});
 
-    int success;
-    char infoLog[512];
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-
-    if (!success)
-    {
-        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n"
-                  << infoLog << std::endl;
-    }
-
-    // Fragment shader stuff
-    unsigned int fragmentShader;
-    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
-
-    // Shader program
-    unsigned int shaderProgram; 
-    shaderProgram = glCreateProgram(); 
-
-    glAttachShader(shaderProgram, vertexShader); 
-    glAttachShader(shaderProgram, fragmentShader); 
-    glLinkProgram(shaderProgram);
-
-    glUseProgram(shaderProgram); 
-
-    glDeleteShader(vertexShader); 
-    glDeleteShader(fragmentShader); 
+    // Create our fragment and vertex shaders 
+    Shader shader("/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shaders/vert.vs", "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shaders/frag.fs");
+ 
 
     // VBO STUFF
     unsigned int VBO;
     glGenBuffers(1, &VBO);                                                     // Create the buffer for the VBO
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);                                        // We bind the buffer to the array target
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW); // Write the buffer data
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0); 
-    glEnableVertexAttribArray(0);  
 
     unsigned int VAO;
     glGenVertexArrays(1, &VAO);  
@@ -123,9 +78,13 @@ int main()
         // Process input call
         processInput(window);
         
-        glUseProgram(shaderProgram);
+        
+        shader.use(); 
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0,3); 
+
+        
+        object.render(); 
 
 
         glfwSwapBuffers(window); // Swaps the color buffer that is used to render to during this render iteration and show it ot the output screen
