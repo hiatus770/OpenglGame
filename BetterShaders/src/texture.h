@@ -20,9 +20,10 @@ public:
     unsigned int VAO; 
     Shader* shader; 
 
+    glm::mat4 transform = glm::mat4(1.0f); 
+
     Texture(std::string location, std::vector<float> coordinates)
     {
-
         for(int i = 0; i < coordinates.size(); i++){
             vertices.push_back(coordinates[i]); 
         }
@@ -77,6 +78,7 @@ public:
     // Drawing the texture
     void render(){
         shader->use(); 
+        shader->setMat4("transform", transform); 
         glBindTexture(GL_TEXTURE_2D, texture);
         glBindVertexArray(VAO); 
         glDrawArrays(GL_TRIANGLES, 0, vertices.size());
