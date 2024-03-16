@@ -1,8 +1,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
-#include "shader.h" 
-#include "object.h" 
+#include "shader.h"
+#include "object.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
@@ -10,7 +10,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "texture.h" 
+#include "texture.h"
 
 const int SRC_WIDTH = 600;
 const int SRC_HEIGHT = 600;
@@ -37,7 +37,6 @@ int main()
     // Creating the window object
     GLFWwindow *window = glfwCreateWindow(SRC_WIDTH, SRC_HEIGHT, "Better Shaders", NULL, NULL);
 
-
     // If it wasn't created then we stop here
     if (window == NULL)
     {
@@ -57,55 +56,81 @@ int main()
     // Set the frameBufferSizeballback function
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-
-    Object object({-0.75, -0.75, 0, 0.75, 0.75, 0, 0, -0.75, 0, 0.1, 0.35, 0}, {1.0, 0, 0, 1.0}); 
+    Object object({0.5, -0.5, -0.5,
+                   0.5, 0.5, -0.5, 
+                   0.5, -0.5, -0.5, 
+                   0.5, -0.5, 0.5,
+                   0.5, 0.5, -0.5, 
+                   -0.5, 0.5, -0.5,
+                   -0.5, 0.5, -0.5, 
+                   -0.5, -0.5, -0.5,
+                   -0.5, -0.5, -0.5,
+                   0.5, -0.5, -0.5,
+                   0.5, 0.5, 0.5, 
+                   -0.5, 0.5, 0.5,
+                   -0.5, -0.5, 0.5, 
+                   -0.5, 0.5, 0.5, 
+                   0.5, -0.5, 0.5, 
+                   0.5, 0.5, 0.5, 
+                   0.5, -0.5, 0.5, 
+                   -0.5, -0.5, 0.5,
+                    //  The connecting squares 
+                   0.5, 0.5, -0.5, 
+                   0.5, 0.5, 0.5,
+                   -0.5, 0.5, -0.5, 
+                   -0.5, 0.5, 0.5, 
+                   -0.5, -0.5, -0.5, 
+                   -0.5, -0.5, 0.5,
+                   },
+                  {1.0, 1.0, 1.0, 1.0});
     Object object2({-0.2, 1, 0, 0.75, 0.75, 0, 0, -0.75, 0, 0.4, -0.35, 0}, {0, 1.0, 0, 1.0});
 
-    // Create our fragment and vertex shaders 
+    // Create our fragment and vertex shaders
     Shader shader("/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shaders/vert.vs", "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shaders/frag.fs");
- 
+
     // Texture texture("/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/amogus.png", {
     //      0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
     //      0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
     //     -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
-    //     -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f,  // top left  
+    //     -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f,  // top left
     //      0.5f, 0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
     //     -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f // bottom left
     // });
 
     // VBO STUFF
     unsigned int VBO;
-    glGenBuffers(1, &VBO);                                                     // Create the buffer for the VBO
+    glGenBuffers(1, &VBO); // Create the buffer for the VBO
 
     unsigned int VAO;
-    glGenVertexArrays(1, &VAO);  
-    glBindVertexArray(VAO); 
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW); 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0); 
-    glEnableVertexAttribArray(0); 
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+    glEnableVertexAttribArray(0);
 
     // Main Loop of the function
     while (!glfwWindowShouldClose(window))
     {
         // Clear the screen before we start
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         // Process input call
         processInput(window);
-        
-        
-        shader.use(); 
+
+        shader.use();
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0,3); 
+        glDrawArrays(GL_TRIANGLES, 0, 3);
 
-        object.matrixTransform(glm::rotate(object.transform, glm::radians(10.001f), glm::vec3(0.0f, 0.0f, 1.0f)));
+        object.matrixTransform(glm::rotate(object.transform, glm::radians(1.001f), glm::vec3(0.0f, 0.0f, 1.0f)));
+        object.matrixTransform(glm::rotate(object.transform, glm::radians(3.001f), glm::vec3(0.0f, 1.0f, 0.0f)));
+        object.matrixTransform(glm::rotate(object.transform, glm::radians(-1.001f), glm::vec3(1.0f, 0.5f, 1.0f)));
         
-        object.render(); 
-        object2.render(GL_LINE_STRIP); 
+        object.render(GL_LINES);
+        object2.render(GL_LINE_STRIP);
 
-        // texture.render(); 
+        // texture.render();
 
         glfwSwapBuffers(window); // Swaps the color buffer that is used to render to during this render iteration and show it ot the output screen
         glfwPollEvents();        // Checks if any events are triggered, updates the window state andcalls the corresponding functions
