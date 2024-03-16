@@ -4,7 +4,7 @@
 #include "shader.h" 
 #include "object.h" 
 
-const int SRC_WIDTH = 800;
+const int SRC_WIDTH = 600;
 const int SRC_HEIGHT = 600;
 
 // Whenever the window is changed this function is called
