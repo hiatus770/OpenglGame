@@ -16,7 +16,11 @@ public:
 
     Shader* shader; 
 
-    Object(std::vector<float> v, std::vector<float> color = {1.0, 1.0, 1.0, 1.0}){
+    Object(std::vector<float> v, 
+           std::vector<float> color = {1.0, 1.0, 1.0, 1.0}, 
+           std::string vertexShaderPath = "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shaders/vert.vs", 
+           std::string fragmentShaderPath = "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shaders/frag.fs")
+    {
         if (v.size()%6 != 0){
             std::cout << "Invalid size for vertices, must be pairs of 3 floats\n"; 
             return; 
@@ -45,11 +49,11 @@ public:
 
     }
 
-    void render(){
+    void render(GLenum mode = GL_LINES){
         shader->use(); 
         shader->setVec4("color", objColor); 
         glBindVertexArray(VAO); 
-        glDrawArrays(GL_LINES, 0, vertices.size()); 
+        glDrawArrays(mode, 0, vertices.size()); 
     }
 
 };

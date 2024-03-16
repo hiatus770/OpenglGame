@@ -3,6 +3,10 @@
 #include <iostream>
 #include "shader.h" 
 #include "object.h" 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
+#include "texture.h" 
 
 const int SRC_WIDTH = 600;
 const int SRC_HEIGHT = 600;
@@ -50,11 +54,20 @@ int main()
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 
-    Object object({-0.75, -0.75, 0, 0.75, 0.75, 0, 0, -0.75, 0, 0.1, 0.35, 0}, {1.0, 0, 0, 1.0});
+    Object object({-0.75, -0.75, 0, 0.75, 0.75, 0, 0, -0.75, 0, 0.1, 0.35, 0}, {1.0, 0, 0, 1.0}); 
+    Object object2({-0.2, 1, 0, 0.75, 0.75, 0, 0, -0.75, 0, 0.4, -0.35, 0}, {0, 1.0, 0, 1.0});
 
     // Create our fragment and vertex shaders 
     Shader shader("/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shaders/vert.vs", "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shaders/frag.fs");
  
+    Texture texture("/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/amogus.png", {
+         0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
+         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
+        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
+        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f,  // top left  
+         0.5f, 0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
+        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f // bottom left
+    });
 
     // VBO STUFF
     unsigned int VBO;
@@ -85,7 +98,9 @@ int main()
 
         
         object.render(); 
+        object2.render(GL_LINE_STRIP); 
 
+        texture.render(); 
 
         glfwSwapBuffers(window); // Swaps the color buffer that is used to render to during this render iteration and show it ot the output screen
         glfwPollEvents();        // Checks if any events are triggered, updates the window state andcalls the corresponding functions
