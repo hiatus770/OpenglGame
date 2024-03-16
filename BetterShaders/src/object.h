@@ -13,6 +13,7 @@ public:
     unsigned int VBO; 
     unsigned int VAO; 
     std::vector<float> objColor; 
+    glm::mat4 transform = glm::mat4(1.0f); 
 
     Shader* shader; 
 
@@ -47,6 +48,14 @@ public:
         glEnableVertexAttribArray(0);
 
 
+    }
+
+
+    void matrixTransform(glm::mat4 transformation){
+        // transform = transform * transformation; 
+        transform = transformation; 
+        shader->use(); 
+        shader->setMat4("transform", transform); 
     }
 
     void render(GLenum mode = GL_LINES){
