@@ -16,21 +16,9 @@ const int SRC_WIDTH = 600;
 const int SRC_HEIGHT = 600;
 
 #include "camera.h"
-#include "player.h"
 
-// Whenever the window is changed this function is called
-void framebuffer_size_callback(GLFWwindow *window, int width, int height);
-// Mouse call back
-void mouse_callback(GLFWwindow *window, double xpos, double ypos);
-// Processing all input here
-void processInput(GLFWwindow *window);
 
-// Defining our vertices
-float vertices[] = {
-    -0.5f, -0.5f, 0.0f,
-    0.5f, -0.5f, 0.0f,
-    0.0f, 0.5f, 0.0f};
-
+// Sprit needed for player class 
 std::vector<float> shipSprite = {
     0.0f, 0.5f, 0.0f,
     0.75f, 0.0f, -0.5f,
@@ -58,7 +46,37 @@ std::vector<float> shipSprite = {
     0.0f, 0.0f, 1.0f};
 
 
-Camera camera; 
+Camera camera; // Global Camera for the entire code thing :)  
+
+#include "player.h"
+
+// Whenever the window is changed this function is called
+void framebuffer_size_callback(GLFWwindow *window, int width, int height);
+// Mouse call back
+void mouse_callback(GLFWwindow *window, double xpos, double ypos);
+// Processing all input here
+void processInput(GLFWwindow *window);
+
+// Defining our vertices
+float vertices[] = {
+    -0.5f, -0.5f, 0.0f,
+    0.5f, -0.5f, 0.0f,
+    0.0f, 0.5f, 0.0f};
+
+Player player({
+    // Shaft of the arrow
+    0.0f,  0.0f,  0.0f,  // Start point
+    0.0f,  0.0f, -1.0f,  // End point
+
+    // First line of the arrowhead
+    0.0f,  0.0f, -1.0f,  // Start point
+   -0.25f,  0.25f, 0.5f,  // End point
+
+    // Second line of the arrowhead
+    0.0f,  0.0f, -1.0f,  // Start point
+    0.25f,  0.25f, 0.5f   // End point
+}); 
+
 
 bool firstMouse = true;
 float yaw = -90.0f;
@@ -104,6 +122,8 @@ int main()
     // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetCursorPosCallback(window, mouse_callback);
 
+
+
     Object object(shipSprite,
                   {1.0, 1.0, 1.0, 1.0});
     Object object2({-0.2, 1, 0, 0.75, 0.75, 0, 0, -0.75, 0, 0.4, -0.35, 0}, {0, 1.0, 0, 1.0});
@@ -120,27 +140,18 @@ int main()
                                                                                               -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f  // bottom left
                                                                                           });
 
-    // VBO STUFF
-    unsigned int VBO;
-    glGenBuffers(1, &VBO); // Create the buffer for the VBO
 
-    unsigned int VAO;
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
-    glEnableVertexAttribArray(0);
 
-    // Temporary view crap
-    glm::mat4 view = glm::mat4(1.0f);
-    glm::mat4 projection;
-    projection = glm::perspective(glm::radians(20.0f), (float)SRC_WIDTH / SRC_HEIGHT, 0.1f, 100.0f);
+    
+    player.createPlayerObject(); 
 
 
     // Main Loop of the function
     while (!glfwWindowShouldClose(window))
     {
+        float currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;  
         // Clear the screen before we start
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -148,22 +159,15 @@ int main()
         // Process input call
         processInput(window);
 
-        shader.use();
-        glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-
-        // glm::vec3 direction;
-        // direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-        // direction.y = sin(glm::radians(pitch));
-        // direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-        // cameraFront = glm::normalize(direction);
-
 
         // object.matrixTransform(glm::rotate(object.model, glm::radians(1.001f), glm::vec3(0.0f, 0.0f, 1.0f)));
-        // object.matrixTransform(glm::rotate(object.model, glm::radians(3.001f), glm::vec3(0.0f, 1.0f, 0.0f)));
+        object.matrixTransform(glm::rotate(object.model, glm::radians(3.001f), glm::vec3(0.0f, 1.0f, 0.0f)));
         // object.matrixTransform(glm::rotate(object.model, glm::radians(-1.001f), glm::vec3(1.0f, 0.5f, 1.0f)));
 
+
+        player.render(); 
         object.render(camera.getViewMatrix(), camera.getProjectionMatrix(), GL_LINES);
+
 
         // texture.transform = glm::rotate(texture.transform, glm::radians(10.0f), glm::vec3(1.0f, 2.5f, 0.0f));
         // texture.render();
@@ -219,55 +223,101 @@ void mouse_callback(GLFWwindow *window, double xposIn, double yposIn)
 
 void processInput(GLFWwindow *window)
 {
+
+    // Player ENUMS ARE 
+    /*
+    FORWARD,
+    BACKWARD,
+    STRAFE_LEFT,
+    STRAFE_RIGHT,
+    ROLL_LEFT,
+    ROLL_RIGHT,
+    RISE,
+    FALL,
+    PITCH_UP,
+    PITCH_DOWN,
+    YAW_LEFT,
+    YAW_RIGHT
+    */
+
+    // Function is used as follows player.processKeyboard(ENUM, deltaTime); 
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
-    const float cameraSpeed = 0.05f; // adjust accordingly
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        camera.position += cameraSpeed * camera.direction;
+        player.processKeyboard(FORWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        camera.position -= cameraSpeed * camera.direction;
+        player.processKeyboard(BACKWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        camera.cameraUp = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), camera.direction)) * camera.cameraUp;
+        player.processKeyboard(STRAFE_LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        camera.cameraUp = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(-1.0f), camera.direction)) * camera.cameraUp;
+        player.processKeyboard(STRAFE_RIGHT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-    {
-        camera.direction = glm::vec3(glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), glm::cross(camera.direction, camera.cameraUp)) * glm::vec4(camera.direction, 1.0f));
-    }
+        player.processKeyboard(PITCH_UP, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-    {
-        camera.direction = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(-1.0f), glm::cross(camera.direction, camera.cameraUp))) * camera.direction;
-    }
-
+        player.processKeyboard(PITCH_DOWN, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-    {
-        camera.direction = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(-1.0f), camera.cameraUp)) * camera.direction;
-    }
-
+        player.processKeyboard(YAW_RIGHT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-    {
-        camera.direction = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), camera.cameraUp)) * camera.direction;
-    }
-
-    // Strafing keys
-    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-    {
-        camera.position -= glm::normalize(glm::cross(camera.direction, camera.cameraUp)) * cameraSpeed;
-    } 
-    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-    {    
-        camera.position += glm::normalize(glm::cross(camera.direction, camera.cameraUp)) * cameraSpeed;
-    }
-
-    // Rise and Fall keys
+        player.processKeyboard(YAW_LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
-    {
-        camera.position += glm::normalize(camera.cameraUp) * cameraSpeed;
-    } 
+        player.processKeyboard(RISE, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
-    {    
-        camera.position -= glm::normalize(camera.cameraUp) * cameraSpeed;
-    }
+        player.processKeyboard(FALL, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+        player.processKeyboard(ROLL_LEFT, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+        player.processKeyboard(ROLL_RIGHT, deltaTime);
 
-    // cameraFront = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(roll), rollAdjustedCameraUp)) * cameraFront;
+    camera.position = player.getCameraPosition();
+    camera.direction = player.getCameraDirection(); 
+    camera.cameraUp = player.getCameraUp(); 
+
+    // const float cameraSpeed = 0.05f; // adjust accordingly
+    // if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    //     camera.position += cameraSpeed * camera.direction;
+    // if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    //     camera.position -= cameraSpeed * camera.direction;
+    // if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    //     camera.cameraUp = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), camera.direction)) * camera.cameraUp;
+    // if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    //     camera.cameraUp = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(-1.0f), camera.direction)) * camera.cameraUp;
+    // if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+    // {
+    //     camera.direction = glm::vec3(glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), glm::cross(camera.direction, camera.cameraUp)) * glm::vec4(camera.direction, 1.0f));
+    // }
+    // if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+    // {
+    //     camera.direction = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(-1.0f), glm::cross(camera.direction, camera.cameraUp))) * camera.direction;
+    // }
+
+    // if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+    // {
+    //     camera.direction = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(-1.0f), camera.cameraUp)) * camera.direction;
+    // }
+
+    // if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+    // {
+    //     camera.direction = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), camera.cameraUp)) * camera.direction;
+    // }
+
+    // // Strafing keys
+    // if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+    // {
+    //     camera.position -= glm::normalize(glm::cross(camera.direction, camera.cameraUp)) * cameraSpeed;
+    // } 
+    // if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+    // {    
+    //     camera.position += glm::normalize(glm::cross(camera.direction, camera.cameraUp)) * cameraSpeed;
+    // }
+
+    // // Rise and Fall keys
+    // if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
+    // {
+    //     camera.position += glm::normalize(camera.cameraUp) * cameraSpeed;
+    // } 
+    // if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
+    // {    
+    //     camera.position -= glm::normalize(camera.cameraUp) * cameraSpeed;
+    // }
+
 }
