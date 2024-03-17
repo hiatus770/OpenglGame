@@ -237,11 +237,11 @@ void processInput(GLFWwindow *window)
         camera.cameraUp = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(-1.0f), camera.direction)) * camera.cameraUp;
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
     {
-        camera.direction = glm::vec3(glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), glm::cross(camera.direction, cameraUp)) * glm::vec4(camera.direction, 1.0f));
+        camera.direction = glm::vec3(glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), glm::cross(camera.direction, camera.cameraUp)) * glm::vec4(camera.direction, 1.0f));
     }
     if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
     {
-        camera.direction = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(-1.0f), glm::cross(camera.direction, cameraUp))) * camera.direction;
+        camera.direction = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(-1.0f), glm::cross(camera.direction, camera.cameraUp))) * camera.direction;
     }
 
     if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
