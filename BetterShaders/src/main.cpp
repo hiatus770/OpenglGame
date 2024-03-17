@@ -17,6 +17,8 @@ const int SRC_HEIGHT = 600;
 
 // Whenever the window is changed this function is called
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
+// Mouse call back
+void mouse_callback(GLFWwindow *window, double xpos, double ypos);
 // Processing all input here
 void processInput(GLFWwindow *window);
 
@@ -25,6 +27,48 @@ float vertices[] = {
     -0.5f, -0.5f, 0.0f,
     0.5f, -0.5f, 0.0f,
     0.0f, 0.5f, 0.0f};
+
+std::vector<float> shipSprite = {
+    0.0f, 0.5f, 0.0f,
+    0.75f, 0.0f, -0.5f,
+
+    0.75f, 0.0f, -0.5f,
+    0.0f, -0.25f, 0.0f,
+
+    0.0f, 0.5f, 0.0f,
+    -0.75f, 0.0f, -0.5f,
+
+    -0.75f, 0.0f, -0.5f,
+    0.0f, -0.25f, 0.0f, // BACK OF SHIP
+
+    // FRONT OF SHIP
+    0.0f, 0.0f, 1.0f,
+    -0.75f, 0.0f, -0.5f,
+
+    0.0f, -0.25f, 0.0f,
+    0.0f, 0.0f, 1.0f,
+
+    0.0f, 0.5f, 0.0f,
+    0.0f, 0.0f, 1.0f,
+
+    0.75f, 0.0f, -0.5f,
+    0.0f, 0.0f, 1.0f};
+
+// Temporary camera garbage
+glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+bool firstMouse = true;
+float yaw = -90.0f;
+float pitch = 0.0f;
+float roll = 0.0f;
+float lastX = SRC_WIDTH / 2.0;
+float lastY = SRC_HEIGHT / 2.0;
+
+// timing
+float deltaTime = 0.0f; // time between current frame and last frame
+float lastFrame = 0.0f;
 
 int main()
 {
@@ -55,33 +99,37 @@ int main()
 
     // Set the frameBufferSizeballback function
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glEnable(GL_DEPTH_TEST);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetCursorPosCallback(window, mouse_callback);
 
-    Object object({0.5, -0.5, -0.5,
-                   0.5, 0.5, -0.5, 
-                   0.5, -0.5, -0.5, 
-                   0.5, -0.5, 0.5,
-                   0.5, 0.5, -0.5, 
-                   -0.5, 0.5, -0.5,
-                   -0.5, 0.5, -0.5, 
-                   -0.5, -0.5, -0.5,
-                   -0.5, -0.5, -0.5,
-                   0.5, -0.5, -0.5,
-                   0.5, 0.5, 0.5, 
-                   -0.5, 0.5, 0.5,
-                   -0.5, -0.5, 0.5, 
-                   -0.5, 0.5, 0.5, 
-                   0.5, -0.5, 0.5, 
-                   0.5, 0.5, 0.5, 
-                   0.5, -0.5, 0.5, 
-                   -0.5, -0.5, 0.5,
-                    //  The connecting squares 
-                   0.5, 0.5, -0.5, 
-                   0.5, 0.5, 0.5,
-                   -0.5, 0.5, -0.5, 
-                   -0.5, 0.5, 0.5, 
-                   -0.5, -0.5, -0.5, 
-                   -0.5, -0.5, 0.5,
-                   },
+    //     {0.5, -0.5, -0.5,
+    //    0.5, 0.5, -0.5,
+    //    0.5, -0.5, -0.5,
+    //    0.5, -0.5, 0.5,
+    //    0.5, 0.5, -0.5,
+    //    -0.5, 0.5, -0.5,
+    //    -0.5, 0.5, -0.5,
+    //    -0.5, -0.5, -0.5,
+    //    -0.5, -0.5, -0.5,
+    //    0.5, -0.5, -0.5,
+    //    0.5, 0.5, 0.5,
+    //    -0.5, 0.5, 0.5,
+    //    -0.5, -0.5, 0.5,
+    //    -0.5, 0.5, 0.5,
+    //    0.5, -0.5, 0.5,
+    //    0.5, 0.5, 0.5,
+    //    0.5, -0.5, 0.5,
+    //    -0.5, -0.5, 0.5,
+    //     //  The connecting squares
+    //    0.5, 0.5, -0.5,
+    //    0.5, 0.5, 0.5,
+    //    -0.5, 0.5, -0.5,
+    //    -0.5, 0.5, 0.5,
+    //    -0.5, -0.5, -0.5,
+    //    -0.5, -0.5, 0.5,
+
+    Object object(shipSprite,
                   {1.0, 1.0, 1.0, 1.0});
     Object object2({-0.2, 1, 0, 0.75, 0.75, 0, 0, -0.75, 0, 0.4, -0.35, 0}, {0, 1.0, 0, 1.0});
 
@@ -89,13 +137,13 @@ int main()
     Shader shader("/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shaders/vert.vs", "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shaders/frag.fs");
 
     Texture texture("/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/amogus2.png", {
-         0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
-         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
-        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
-        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f,  // top left
-         0.5f, 0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
-        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f // bottom left
-    });
+                                                                                              0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,   // top right
+                                                                                              0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,  // bottom right
+                                                                                              -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
+                                                                                              -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f,  // top left
+                                                                                              0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,   // top right
+                                                                                              -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f  // bottom left
+                                                                                          });
 
     // VBO STUFF
     unsigned int VBO;
@@ -109,12 +157,17 @@ int main()
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(0);
 
+    // Temporary view crap
+    glm::mat4 view = glm::mat4(1.0f);
+    glm::mat4 projection;
+    projection = glm::perspective(glm::radians(20.0f), (float)SRC_WIDTH / SRC_HEIGHT, 0.1f, 100.0f);
+
     // Main Loop of the function
     while (!glfwWindowShouldClose(window))
     {
         // Clear the screen before we start
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Process input call
         processInput(window);
@@ -123,15 +176,22 @@ int main()
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
-        object.matrixTransform(glm::rotate(object.transform, glm::radians(1.001f), glm::vec3(0.0f, 0.0f, 1.0f)));
-        object.matrixTransform(glm::rotate(object.transform, glm::radians(3.001f), glm::vec3(0.0f, 1.0f, 0.0f)));
-        object.matrixTransform(glm::rotate(object.transform, glm::radians(-1.001f), glm::vec3(1.0f, 0.5f, 1.0f)));
-        
-        object.render(GL_LINES);
-        object2.render(GL_LINE_STRIP);
+        // glm::vec3 direction;
+        // direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+        // direction.y = sin(glm::radians(pitch));
+        // direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+        // cameraFront = glm::normalize(direction);
 
-        texture.transform = glm::rotate(texture.transform, glm::radians(10.0f), glm::vec3(1.0f, 2.5f, 0.0f)); 
-        texture.render();
+        view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+
+        // object.matrixTransform(glm::rotate(object.model, glm::radians(1.001f), glm::vec3(0.0f, 0.0f, 1.0f)));
+        // object.matrixTransform(glm::rotate(object.model, glm::radians(3.001f), glm::vec3(0.0f, 1.0f, 0.0f)));
+        // object.matrixTransform(glm::rotate(object.model, glm::radians(-1.001f), glm::vec3(1.0f, 0.5f, 1.0f)));
+
+        object.render(view, projection, GL_LINES);
+
+        // texture.transform = glm::rotate(texture.transform, glm::radians(10.0f), glm::vec3(1.0f, 2.5f, 0.0f));
+        // texture.render();
 
         glfwSwapBuffers(window); // Swaps the color buffer that is used to render to during this render iteration and show it ot the output screen
         glfwPollEvents();        // Checks if any events are triggered, updates the window state andcalls the corresponding functions
@@ -147,8 +207,92 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
     glViewport(0, 0, width, height);
 }
 
+void mouse_callback(GLFWwindow *window, double xposIn, double yposIn)
+{
+    // float xpos = static_cast<float>(xposIn);
+    // float ypos = static_cast<float>(yposIn);
+    // if (firstMouse)
+    // {
+    //     lastX = xpos;
+    //     lastY = ypos;
+    //     firstMouse = false;
+    // }
+
+    // float xoffset = xpos - lastX;
+    // float yoffset = lastY - ypos;
+    // lastX = xpos;
+    // lastY = ypos;
+
+    // float sensitivity = 0.1f;
+    // xoffset *= sensitivity;
+    // yoffset *= sensitivity;
+
+    // yaw   += xoffset;
+    // pitch += yoffset;
+
+    // if(pitch > 89.0f)
+    //     pitch = 89.0f;
+    // if(pitch < -89.0f)
+    //     pitch = -89.0f;
+
+    // glm::vec3 direction;
+    // direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    // direction.y = sin(glm::radians(pitch));
+    // direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+    // cameraFront = glm::normalize(direction);
+}
+
 void processInput(GLFWwindow *window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+    const float cameraSpeed = 0.05f; // adjust accordingly
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        cameraPos += cameraSpeed * cameraFront;
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        cameraPos -= cameraSpeed * cameraFront;
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        cameraUp = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), cameraFront)) * cameraUp;
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        cameraUp = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(-1.0f), cameraFront)) * cameraUp;
+    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+    {
+        cameraFront = glm::vec3(glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), glm::cross(cameraFront, cameraUp)) * glm::vec4(cameraFront, 1.0f));
+    }
+    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+    {
+        cameraFront = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(-1.0f), glm::cross(cameraFront, cameraUp))) * cameraFront;
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+    {
+        cameraFront = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(-1.0f), cameraUp)) * cameraFront;
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+    {
+        cameraFront = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), cameraUp)) * cameraFront;
+    }
+
+    // Strafing keys
+    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+    {
+        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    } 
+    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+    {    
+        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    }
+
+    // Rise and Fall keys
+    if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
+    {
+        cameraPos += glm::normalize(cameraUp) * cameraSpeed;
+    } 
+    if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
+    {    
+        cameraPos -= glm::normalize(cameraUp) * cameraSpeed;
+    }
+
+    // cameraFront = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(roll), rollAdjustedCameraUp)) * cameraFront;
 }

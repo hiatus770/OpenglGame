@@ -13,7 +13,7 @@ public:
     unsigned int VBO; 
     unsigned int VAO; 
     std::vector<float> objColor; 
-    glm::mat4 transform = glm::mat4(1.0f); 
+    glm::mat4 model = glm::mat4(1.0f); 
 
     Shader* shader; 
 
@@ -22,6 +22,7 @@ public:
            std::string vertexShaderPath = "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shaders/vert.vs", 
            std::string fragmentShaderPath = "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shaders/frag.fs")
     {
+
         if (v.size()%6 != 0){
             std::cout << "Invalid size for vertices, must be pairs of 3 floats\n"; 
             return; 
@@ -50,17 +51,19 @@ public:
 
     }
 
-
     void matrixTransform(glm::mat4 transformation){
         // transform = transform * transformation; 
-        transform = transformation; 
+        model = transformation; 
         shader->use(); 
-        shader->setMat4("transform", transform); 
+        shader->setMat4("model", model); 
     }
 
-    void render(GLenum mode = GL_LINES){
+    void render(glm::mat4 view, glm::mat4 projection, GLenum mode = GL_LINES){
         shader->use(); 
         shader->setVec4("color", objColor); 
+        shader->setMat4("model", model); 
+        shader->setMat4("view", view); 
+        shader->setMat4("projection", projection); 
         glBindVertexArray(VAO); 
         glDrawArrays(mode, 0, vertices.size()); 
     }
