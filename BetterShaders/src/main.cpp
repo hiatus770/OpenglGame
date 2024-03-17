@@ -15,6 +15,9 @@
 const int SRC_WIDTH = 600;
 const int SRC_HEIGHT = 600;
 
+#include "camera.h"
+
+
 // Whenever the window is changed this function is called
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 // Mouse call back
@@ -59,6 +62,8 @@ glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
+Camera camera; 
+
 bool firstMouse = true;
 float yaw = -90.0f;
 float pitch = 0.0f;
@@ -79,7 +84,7 @@ int main()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // This means we do not use any backwards compatible features, so its a smaller set of all of OPENGL
 
     // Creating the window object
-    GLFWwindow *window = glfwCreateWindow(SRC_WIDTH, SRC_HEIGHT, "Better Shaders", NULL, NULL);
+    GLFWwindow *window = glfwCreateWindow(SRC_WIDTH, SRC_HEIGHT, "Moverment", NULL, NULL);
 
     // If it wasn't created then we stop here
     if (window == NULL)
@@ -100,34 +105,8 @@ int main()
     // Set the frameBufferSizeballback function
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glEnable(GL_DEPTH_TEST);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetCursorPosCallback(window, mouse_callback);
-
-    //     {0.5, -0.5, -0.5,
-    //    0.5, 0.5, -0.5,
-    //    0.5, -0.5, -0.5,
-    //    0.5, -0.5, 0.5,
-    //    0.5, 0.5, -0.5,
-    //    -0.5, 0.5, -0.5,
-    //    -0.5, 0.5, -0.5,
-    //    -0.5, -0.5, -0.5,
-    //    -0.5, -0.5, -0.5,
-    //    0.5, -0.5, -0.5,
-    //    0.5, 0.5, 0.5,
-    //    -0.5, 0.5, 0.5,
-    //    -0.5, -0.5, 0.5,
-    //    -0.5, 0.5, 0.5,
-    //    0.5, -0.5, 0.5,
-    //    0.5, 0.5, 0.5,
-    //    0.5, -0.5, 0.5,
-    //    -0.5, -0.5, 0.5,
-    //     //  The connecting squares
-    //    0.5, 0.5, -0.5,
-    //    0.5, 0.5, 0.5,
-    //    -0.5, 0.5, -0.5,
-    //    -0.5, 0.5, 0.5,
-    //    -0.5, -0.5, -0.5,
-    //    -0.5, -0.5, 0.5,
 
     Object object(shipSprite,
                   {1.0, 1.0, 1.0, 1.0});
@@ -162,6 +141,7 @@ int main()
     glm::mat4 projection;
     projection = glm::perspective(glm::radians(20.0f), (float)SRC_WIDTH / SRC_HEIGHT, 0.1f, 100.0f);
 
+
     // Main Loop of the function
     while (!glfwWindowShouldClose(window))
     {
@@ -188,7 +168,7 @@ int main()
         // object.matrixTransform(glm::rotate(object.model, glm::radians(3.001f), glm::vec3(0.0f, 1.0f, 0.0f)));
         // object.matrixTransform(glm::rotate(object.model, glm::radians(-1.001f), glm::vec3(1.0f, 0.5f, 1.0f)));
 
-        object.render(view, projection, GL_LINES);
+        object.render(camera.getViewMatrix(), camera.getProjectionMatrix(), GL_LINES);
 
         // texture.transform = glm::rotate(texture.transform, glm::radians(10.0f), glm::vec3(1.0f, 2.5f, 0.0f));
         // texture.render();
@@ -248,50 +228,50 @@ void processInput(GLFWwindow *window)
         glfwSetWindowShouldClose(window, true);
     const float cameraSpeed = 0.05f; // adjust accordingly
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        cameraPos += cameraSpeed * cameraFront;
+        camera.position += cameraSpeed * camera.direction;
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        cameraPos -= cameraSpeed * cameraFront;
+        camera.position -= cameraSpeed * camera.direction;
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        cameraUp = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), cameraFront)) * cameraUp;
+        camera.cameraUp = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), camera.direction)) * camera.cameraUp;
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        cameraUp = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(-1.0f), cameraFront)) * cameraUp;
+        camera.cameraUp = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(-1.0f), camera.direction)) * camera.cameraUp;
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
     {
-        cameraFront = glm::vec3(glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), glm::cross(cameraFront, cameraUp)) * glm::vec4(cameraFront, 1.0f));
+        camera.direction = glm::vec3(glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), glm::cross(camera.direction, cameraUp)) * glm::vec4(camera.direction, 1.0f));
     }
     if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
     {
-        cameraFront = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(-1.0f), glm::cross(cameraFront, cameraUp))) * cameraFront;
+        camera.direction = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(-1.0f), glm::cross(camera.direction, cameraUp))) * camera.direction;
     }
 
     if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
     {
-        cameraFront = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(-1.0f), cameraUp)) * cameraFront;
+        camera.direction = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(-1.0f), camera.cameraUp)) * camera.direction;
     }
 
     if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
     {
-        cameraFront = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), cameraUp)) * cameraFront;
+        camera.direction = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), camera.cameraUp)) * camera.direction;
     }
 
     // Strafing keys
     if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
     {
-        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        camera.position -= glm::normalize(glm::cross(camera.direction, camera.cameraUp)) * cameraSpeed;
     } 
     if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
     {    
-        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        camera.position += glm::normalize(glm::cross(camera.direction, camera.cameraUp)) * cameraSpeed;
     }
 
     // Rise and Fall keys
     if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
     {
-        cameraPos += glm::normalize(cameraUp) * cameraSpeed;
+        camera.position += glm::normalize(camera.cameraUp) * cameraSpeed;
     } 
     if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
     {    
-        cameraPos -= glm::normalize(cameraUp) * cameraSpeed;
+        camera.position -= glm::normalize(camera.cameraUp) * cameraSpeed;
     }
 
     // cameraFront = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(roll), rollAdjustedCameraUp)) * cameraFront;
