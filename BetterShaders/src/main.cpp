@@ -16,7 +16,7 @@ const int SRC_WIDTH = 600;
 const int SRC_HEIGHT = 600;
 
 #include "camera.h"
-
+#include "player.h"
 
 // Whenever the window is changed this function is called
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
@@ -57,10 +57,6 @@ std::vector<float> shipSprite = {
     0.75f, 0.0f, -0.5f,
     0.0f, 0.0f, 1.0f};
 
-// Temporary camera garbage
-glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
 Camera camera; 
 
@@ -162,7 +158,6 @@ int main()
         // direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
         // cameraFront = glm::normalize(direction);
 
-        view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
         // object.matrixTransform(glm::rotate(object.model, glm::radians(1.001f), glm::vec3(0.0f, 0.0f, 1.0f)));
         // object.matrixTransform(glm::rotate(object.model, glm::radians(3.001f), glm::vec3(0.0f, 1.0f, 0.0f)));
