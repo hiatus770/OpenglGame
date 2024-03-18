@@ -10,6 +10,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+// TODO 
+// -- IMplement the camera rotatoin stuff so textures appear in the right place! 
+// -- Maybe do something for UI features that you will need in the future :sob: 
+
 class Texture
 {
 public:

@@ -21,34 +21,40 @@ const int SRC_HEIGHT = 600;
 // Sprit needed for player class 
 std::vector<float> shipSprite = {
     0.0f, 0.5f, 0.0f,
-    0.75f, 0.0f, -0.5f,
+    0.75f, 0.0f, 0.5f,
 
-    0.75f, 0.0f, -0.5f,
+    0.75f, 0.0f, 0.5f,
     0.0f, -0.25f, 0.0f,
 
     0.0f, 0.5f, 0.0f,
-    -0.75f, 0.0f, -0.5f,
+    -0.75f, 0.0f, 0.5f,
 
-    -0.75f, 0.0f, -0.5f,
+    -0.75f, 0.0f, 0.5f,
     0.0f, -0.25f, 0.0f, // BACK OF SHIP
 
     // FRONT OF SHIP
-    0.0f, 0.0f, 1.0f,
-    -0.75f, 0.0f, -0.5f,
+    0.0f, 0.0f, -2.0f,
+    -0.75f, 0.0f, 0.5f,
 
     0.0f, -0.25f, 0.0f,
-    0.0f, 0.0f, 1.0f,
+    0.0f, 0.0f, -2.0f,
 
     0.0f, 0.5f, 0.0f,
-    0.0f, 0.0f, 1.0f,
+    0.0f, 0.0f, -2.0f,
 
-    0.75f, 0.0f, -0.5f,
-    0.0f, 0.0f, 1.0f};
+    0.75f, 0.0f, 0.5f,
+    0.0f, 0.0f, -2.0f,
+    
+    // Back line 
+    0.0f, -0.25, 0.0f, 
+    0.0f, 0.5f, 0.0f
+    };
 
 
 Camera camera; // Global Camera for the entire code thing :)  
 
 #include "player.h"
+#include "star.h"
 
 // Whenever the window is changed this function is called
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
@@ -63,20 +69,32 @@ float vertices[] = {
     0.5f, -0.5f, 0.0f,
     0.0f, 0.5f, 0.0f};
 
-Player player({
-    // Shaft of the arrow
-    0.0f,  0.0f,  0.0f,  // Start point
-    0.0f,  0.0f, -1.0f,  // End point
+// Player player({
+//     // Shaft of the arrow
+//     0.0f,  0.0f,  0.0f,  // Start point
+//     0.0f,  0.0f, -1.0f,  // End point
 
-    // First line of the arrowhead
-    0.0f,  0.0f, -1.0f,  // Start point
-   -0.25f,  0.25f, 0.5f,  // End point
+//     // First line of the arrowhead
+//     0.0f,  0.0f, -1.0f,  // Start point
+//    -0.25f,  0.25f, 0.5f,  // End point
 
-    // Second line of the arrowhead
-    0.0f,  0.0f, -1.0f,  // Start point
-    0.25f,  0.25f, 0.5f   // End point
-}); 
+//     // Second line of the arrowhead
+//     0.0f,  0.0f, -1.0f,  // Start point
+//     0.25f,  0.25f, 0.5f   // End point
+// }); 
 
+// Player player({
+//     0.1f, 0.0f, -0.1f, 
+//     0.0f, 0.0f, 0.0f, 
+    
+//     -0.1f, 0.0f, -0.1f, 
+//     0.0f, 0.0f, 0.0f, 
+    
+//     0.0f, 0.1f, -0.2f, 
+//     0.0f, 0.0f, 0.0f
+// }); 
+
+Player player(shipSprite); 
 
 bool firstMouse = true;
 float yaw = -90.0f;
@@ -142,7 +160,15 @@ int main()
 
 
 
-    
+    // Make a vector of star objects
+
+    std::vector<Star> stars; 
+    for(int i = 0; i < 100; i++){
+        Star temp(glm::vec3(i, -i, 2*i)); 
+        stars.push_back(temp);
+    }
+
+
     player.createPlayerObject(); 
 
 
@@ -164,6 +190,9 @@ int main()
         object.matrixTransform(glm::rotate(object.model, glm::radians(3.001f), glm::vec3(0.0f, 1.0f, 0.0f)));
         // object.matrixTransform(glm::rotate(object.model, glm::radians(-1.001f), glm::vec3(1.0f, 0.5f, 1.0f)));
 
+        for (Star star : stars){
+            star.render(deltaTime, camera.getViewMatrix(), camera.getProjectionMatrix()); 
+        }
 
         player.render(); 
         object.render(camera.getViewMatrix(), camera.getProjectionMatrix(), GL_LINES);
@@ -171,6 +200,8 @@ int main()
 
         // texture.transform = glm::rotate(texture.transform, glm::radians(10.0f), glm::vec3(1.0f, 2.5f, 0.0f));
         // texture.render();
+
+        
 
         glfwSwapBuffers(window); // Swaps the color buffer that is used to render to during this render iteration and show it ot the output screen
         glfwPollEvents();        // Checks if any events are triggered, updates the window state andcalls the corresponding functions
@@ -264,60 +295,24 @@ void processInput(GLFWwindow *window)
     if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
         player.processKeyboard(FALL, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-        player.processKeyboard(ROLL_LEFT, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
         player.processKeyboard(ROLL_RIGHT, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+        player.processKeyboard(ROLL_LEFT, deltaTime);
+
+    if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS){
+        /// Reset orientation
+        player.direction = glm::vec3(1.0f, 0.0f, 0.0f); 
+        player.localUp = glm::vec3(0.0f, 1.0f, 0.0f); 
+    }
 
     camera.position = player.getCameraPosition();
     camera.direction = player.getCameraDirection(); 
     camera.cameraUp = player.getCameraUp(); 
 
-    // const float cameraSpeed = 0.05f; // adjust accordingly
-    // if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-    //     camera.position += cameraSpeed * camera.direction;
-    // if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-    //     camera.position -= cameraSpeed * camera.direction;
-    // if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-    //     camera.cameraUp = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), camera.direction)) * camera.cameraUp;
-    // if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-    //     camera.cameraUp = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(-1.0f), camera.direction)) * camera.cameraUp;
-    // if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-    // {
-    //     camera.direction = glm::vec3(glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), glm::cross(camera.direction, camera.cameraUp)) * glm::vec4(camera.direction, 1.0f));
-    // }
-    // if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-    // {
-    //     camera.direction = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(-1.0f), glm::cross(camera.direction, camera.cameraUp))) * camera.direction;
-    // }
-
-    // if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-    // {
-    //     camera.direction = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(-1.0f), camera.cameraUp)) * camera.direction;
-    // }
-
-    // if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-    // {
-    //     camera.direction = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), camera.cameraUp)) * camera.direction;
-    // }
-
-    // // Strafing keys
-    // if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-    // {
-    //     camera.position -= glm::normalize(glm::cross(camera.direction, camera.cameraUp)) * cameraSpeed;
-    // } 
-    // if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-    // {    
-    //     camera.position += glm::normalize(glm::cross(camera.direction, camera.cameraUp)) * cameraSpeed;
-    // }
-
-    // // Rise and Fall keys
-    // if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
-    // {
-    //     camera.position += glm::normalize(camera.cameraUp) * cameraSpeed;
-    // } 
-    // if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
-    // {    
-    //     camera.position -= glm::normalize(camera.cameraUp) * cameraSpeed;
-    // }
-
+    if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS){
+        // Global camera mode 
+        camera.position = player.position + glm::vec3(10.0f, 10.0f, 10.f);
+        camera.direction = glm::vec3(-1.0f, -1.0f, -1.0f); 
+        camera.cameraUp = glm::vec3(0.0f, 1.0f, 0.0f); 
+    }
 }
