@@ -27,7 +27,7 @@ enum Player_Movement
     YAW_RIGHT
 };
 
-const glm::vec3 cameraOffset = glm::vec3(-0.3f, 0.0f, 0.0f);
+const glm::vec3 cameraOffset = glm::vec3(-2.0f, 0.0f, 0.0f);
 
 class Player
 {
@@ -111,16 +111,19 @@ public:
 
     }
 
-    glm::vec3 getCameraDirection()
-    {
-        return direction;
-    }
 
     glm::vec3 getCameraOffset()
     {
         // return glm::vec3(0); // Actually use the vector components this time please 
         return glm::normalize(localUp) * cameraOffset.y + glm::normalize(direction) * cameraOffset.x + glm::normalize(glm::cross(localUp, direction)) *cameraOffset.z;
     }
+
+    glm::vec3 getCameraDirection()
+    {
+        return ( position + glm::normalize(direction*-3.0f)) - (position + getCameraOffset()); 
+        // return direction;
+    }
+
 
     glm::vec3 getCameraPosition()
     {

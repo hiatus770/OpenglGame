@@ -96,6 +96,7 @@ float vertices[] = {
 
 Player player(shipSprite); 
 
+
 bool firstMouse = true;
 float yaw = -90.0f;
 float pitch = 0.0f;
@@ -171,6 +172,7 @@ int main()
 
     player.createPlayerObject(); 
 
+Star cameraStar(glm::vec3(1.0f, 1.0f, 1.0f)); 
 
     // Main Loop of the function
     while (!glfwWindowShouldClose(window))
@@ -193,6 +195,9 @@ int main()
         for (Star star : stars){
             star.render(deltaTime, camera.getViewMatrix(), camera.getProjectionMatrix()); 
         }
+        
+        cameraStar.position = player.getCameraPosition(); 
+        cameraStar.render(0.1, camera.getViewMatrix(), camera.getProjectionMatrix()); 
 
         player.render(); 
         object.render(camera.getViewMatrix(), camera.getProjectionMatrix(), GL_LINES);
