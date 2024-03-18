@@ -17,8 +17,7 @@ const int SRC_HEIGHT = 600;
 
 #include "camera.h"
 
-
-// Sprit needed for player class 
+// Sprit needed for player class
 std::vector<float> shipSprite = {
     0.0f, 0.5f, 0.0f,
     0.75f, 0.0f, 0.5f,
@@ -44,14 +43,12 @@ std::vector<float> shipSprite = {
 
     0.75f, 0.0f, 0.5f,
     0.0f, 0.0f, -2.0f,
-    
-    // Back line 
-    0.0f, -0.25, 0.0f, 
-    0.0f, 0.5f, 0.0f
-    };
 
+    // Back line
+    0.0f, -0.25, 0.0f,
+    0.0f, 0.5f, 0.0f};
 
-Camera camera; // Global Camera for the entire code thing :)  
+Camera camera; // Global Camera for the entire code thing :)
 
 #include "player.h"
 #include "star.h"
@@ -81,21 +78,20 @@ float vertices[] = {
 //     // Second line of the arrowhead
 //     0.0f,  0.0f, -1.0f,  // Start point
 //     0.25f,  0.25f, 0.5f   // End point
-// }); 
+// });
 
 // Player player({
-//     0.1f, 0.0f, -0.1f, 
-//     0.0f, 0.0f, 0.0f, 
-    
-//     -0.1f, 0.0f, -0.1f, 
-//     0.0f, 0.0f, 0.0f, 
-    
-//     0.0f, 0.1f, -0.2f, 
+//     0.1f, 0.0f, -0.1f,
+//     0.0f, 0.0f, 0.0f,
+
+//     -0.1f, 0.0f, -0.1f,
+//     0.0f, 0.0f, 0.0f,
+
+//     0.0f, 0.1f, -0.2f,
 //     0.0f, 0.0f, 0.0f
-// }); 
+// });
 
-Player player(shipSprite); 
-
+Player player(shipSprite);
 
 bool firstMouse = true;
 float yaw = -90.0f;
@@ -141,8 +137,6 @@ int main()
     // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetCursorPosCallback(window, mouse_callback);
 
-
-
     Object object(shipSprite,
                   {1.0, 1.0, 1.0, 1.0});
     Object object2({-0.2, 1, 0, 0.75, 0.75, 0, 0, -0.75, 0, 0.4, -0.35, 0}, {0, 1.0, 0, 1.0});
@@ -159,27 +153,26 @@ int main()
                                                                                               -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f  // bottom left
                                                                                           });
 
-
-
     // Make a vector of star objects
 
-    std::vector<Star> stars; 
-    for(int i = 0; i < 100; i++){
-        Star temp(glm::vec3(i, -i, 2*i)); 
+    std::vector<Star> stars;
+    for (int i = 0; i < 100; i++)
+    {
+        Star temp(glm::vec3(i, -i, 2 * i));
         stars.push_back(temp);
     }
 
+    player.createPlayerObject();
 
-    player.createPlayerObject(); 
-
-Star cameraStar(glm::vec3(1.0f, 1.0f, 1.0f)); 
+    Star cameraStar(glm::vec3(1.0f, 1.0f, 1.0f));
+    Star directionStar(glm::vec3(1.0f, 1.0f, 1.0f));
 
     // Main Loop of the function
     while (!glfwWindowShouldClose(window))
     {
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;  
+        lastFrame = currentFrame;
         // Clear the screen before we start
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -187,26 +180,24 @@ Star cameraStar(glm::vec3(1.0f, 1.0f, 1.0f));
         // Process input call
         processInput(window);
 
-
         // object.matrixTransform(glm::rotate(object.model, glm::radians(1.001f), glm::vec3(0.0f, 0.0f, 1.0f)));
         object.matrixTransform(glm::rotate(object.model, glm::radians(3.001f), glm::vec3(0.0f, 1.0f, 0.0f)));
         // object.matrixTransform(glm::rotate(object.model, glm::radians(-1.001f), glm::vec3(1.0f, 0.5f, 1.0f)));
 
-        for (Star star : stars){
-            star.render(deltaTime, camera.getViewMatrix(), camera.getProjectionMatrix()); 
+        for (Star star : stars)
+        {
+            star.render(deltaTime, camera.getViewMatrix(), camera.getProjectionMatrix());
         }
-        
-        cameraStar.position = player.getCameraPosition(); 
-        cameraStar.render(0.1, camera.getViewMatrix(), camera.getProjectionMatrix()); 
 
-        player.render(); 
+        cameraStar.position = player.getCameraPosition();
+        cameraStar.render(0.1, camera.getViewMatrix(), camera.getProjectionMatrix());
+
+
+        player.render();
         object.render(camera.getViewMatrix(), camera.getProjectionMatrix(), GL_LINES);
-
 
         // texture.transform = glm::rotate(texture.transform, glm::radians(10.0f), glm::vec3(1.0f, 2.5f, 0.0f));
         // texture.render();
-
-        
 
         glfwSwapBuffers(window); // Swaps the color buffer that is used to render to during this render iteration and show it ot the output screen
         glfwPollEvents();        // Checks if any events are triggered, updates the window state andcalls the corresponding functions
@@ -260,7 +251,7 @@ void mouse_callback(GLFWwindow *window, double xposIn, double yposIn)
 void processInput(GLFWwindow *window)
 {
 
-    // Player ENUMS ARE 
+    // Player ENUMS ARE
     /*
     FORWARD,
     BACKWARD,
@@ -276,7 +267,7 @@ void processInput(GLFWwindow *window)
     YAW_RIGHT
     */
 
-    // Function is used as follows player.processKeyboard(ENUM, deltaTime); 
+    // Function is used as follows player.processKeyboard(ENUM, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
@@ -304,20 +295,22 @@ void processInput(GLFWwindow *window)
     if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
         player.processKeyboard(ROLL_LEFT, deltaTime);
 
-    if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS){
+    if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS)
+    {
         /// Reset orientation
-        player.direction = glm::vec3(1.0f, 0.0f, 0.0f); 
-        player.localUp = glm::vec3(0.0f, 1.0f, 0.0f); 
+        player.direction = glm::vec3(1.0f, 0.0f, 0.0f);
+        player.localUp = glm::vec3(0.0f, 1.0f, 0.0f);
     }
 
     camera.position = player.getCameraPosition();
-    camera.direction = player.getCameraDirection(); 
-    camera.cameraUp = player.getCameraUp(); 
+    camera.direction = player.getCameraDirection();
+    camera.cameraUp = player.getCameraUp();
 
-    if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS){
-        // Global camera mode 
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+    {
+        // Global camera mode
         camera.position = player.position + glm::vec3(10.0f, 10.0f, 10.f);
-        camera.direction = glm::vec3(-1.0f, -1.0f, -1.0f); 
-        camera.cameraUp = glm::vec3(0.0f, 1.0f, 0.0f); 
+        camera.direction = glm::vec3(-1.0f, -1.0f, -1.0f);
+        camera.cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
     }
 }

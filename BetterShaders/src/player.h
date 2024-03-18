@@ -27,7 +27,7 @@ enum Player_Movement
     YAW_RIGHT
 };
 
-const glm::vec3 cameraOffset = glm::vec3(-2.0f, 0.0f, 0.0f);
+const glm::vec3 cameraOffset = glm::vec3(-3.0f, 1.0f, 0.0f);
 
 class Player
 {
@@ -120,8 +120,8 @@ public:
 
     glm::vec3 getCameraDirection()
     {
-        return ( position + glm::normalize(direction*-3.0f)) - (position + getCameraOffset()); 
-        // return direction;
+        // return ( position + glm::normalize(direction*-3.0f)) - (position + getCameraOffset()); 
+        return direction;
     }
 
 
