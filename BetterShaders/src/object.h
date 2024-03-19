@@ -17,12 +17,12 @@ public:
 
     Shader* shader; 
 
-    Object(std::vector<float> v, 
+    Object(Shader* gShader, std::vector<float> v, 
            std::vector<float> color = {1.0, 1.0, 1.0, 1.0}, 
            std::string vertexShaderPath = "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shaders/vert.vs", 
            std::string fragmentShaderPath = "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shaders/frag.fs")
     {
-
+        shader = gShader; 
         if (v.size()%6 != 0){
             std::cout << "Invalid size for vertices, must be pairs of 3 floats\n"; 
             return; 
@@ -36,7 +36,7 @@ public:
             objColor.push_back(color[i]); 
         }
 
-        shader = new Shader("/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shaders/vert.vs", "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shaders/frag.fs");
+        //shader = new Shader("/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shaders/vert.vs", "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shaders/frag.fs");
 
 
         glGenBuffers(1, &VBO); 
@@ -51,11 +51,13 @@ public:
 
     }
 
+
+
     void matrixTransform(glm::mat4 transformation){
         // transform = transform * transformation; 
         model = transformation; 
-        shader->use(); 
-        shader->setMat4("model", model); 
+        // shader->use(); 
+        // shader->setMat4("model", model); 
     }
 
     void render(glm::mat4 view, glm::mat4 projection, GLenum mode = GL_LINES){

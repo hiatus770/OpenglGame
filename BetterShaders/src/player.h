@@ -10,6 +10,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 const float MovementSpeed = 2.5;
+const float RotateMovementSpeed = 50; 
 
 enum Player_Movement
 {
@@ -38,19 +39,20 @@ public:
     std::vector<float> vertices;
     std::vector<float> color;
     Object *playerObj;
+    Shader *shader; 
 
     Player(std::vector<float> Vertices, glm::vec3 Position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 Direction = glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3 LocalUp = glm::vec3(0.0f, 1.0f, 0.0f))
     {
-        std::cout << "Made it here!\n";
         position = Position;
         direction = Direction;
         localUp = LocalUp;
         vertices = Vertices;
     }
 
-    void createPlayerObject()
+
+    void createPlayerObject(Shader* gShader)
     {
-        playerObj = new Object(vertices, {1.0f, 1.0f, 0.0f, 1.0f});
+        playerObj = new Object(gShader, vertices, {1.0f, 1.0f, 0.0f, 1.0f});
         playerObj->matrixTransform(glm::translate(playerObj->model, position));
     }
 
@@ -59,6 +61,8 @@ public:
         glm::vec3 right = glm::normalize(glm::cross(direction, localUp)); // Assuming world up is y-axis
 
         float velocity = MovementSpeed * deltaTime;
+        float rotateVelocity = RotateMovementSpeed * deltaTime; 
+
         if (dir == FORWARD)
             position += velocity * direction;
         if (dir == BACKWARD)
@@ -69,23 +73,23 @@ public:
             localUp = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(-1.0f), direction)) * localUp;
         if (dir == PITCH_UP)
         {
-            direction = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), right)) * direction;
-            localUp = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), right)) * localUp;
+            direction = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(1.0f * rotateVelocity), right)) * direction;
+            localUp = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(1.0f * rotateVelocity), right)) * localUp;
         }
         if (dir == PITCH_DOWN)
         {
-            direction = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(-1.0f), right)) * direction; 
-            localUp = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(-1.0f), right)) * localUp;
+            direction = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(-1.0f * rotateVelocity), right)) * direction; 
+            localUp = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(-1.0f * rotateVelocity), right)) * localUp;
         }
 
         if (dir == YAW_RIGHT)
         {
-            direction = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(-1.0f), localUp)) * direction;
+            direction = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(-1.0f * rotateVelocity), localUp)) * direction;
         }
 
         if (dir == YAW_LEFT)
         {
-            direction = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), localUp)) * direction;
+            direction = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(1.0f * rotateVelocity), localUp)) * direction;
         }
 
         // Strafing keys

@@ -29,10 +29,10 @@ public:
     std::vector<float> color; 
     glm::vec3 rotAxis = glm::vec3(0.0f, 1.0f, 0.0f); 
 
-    Star(glm::vec3 Position, std::vector<float> Color = {1.0f, 1.0f, 1.0f, 1.0f}){
+    Star(Shader* gShader, glm::vec3 Position, std::vector<float> Color = {1.0f, 1.0f, 1.0f, 1.0f}){
         position = Position; 
         color = Color; 
-        starObj = new Object(starVertices, Color); 
+        starObj = new Object(gShader, starVertices, Color); 
     }    
 
     // Render the star

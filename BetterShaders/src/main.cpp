@@ -137,35 +137,43 @@ int main()
     // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetCursorPosCallback(window, mouse_callback);
 
-    Object object(shipSprite,
+    Shader globalShader("/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shaders/vert.vs", "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shaders/frag.fs");
+
+    Object object(&globalShader, shipSprite,
                   {1.0, 1.0, 1.0, 1.0});
-    Object object2({-0.2, 1, 0, 0.75, 0.75, 0, 0, -0.75, 0, 0.4, -0.35, 0}, {0, 1.0, 0, 1.0});
+    Object object2(&globalShader, {-0.2, 1, 0, 0.75, 0.75, 0, 0, -0.75, 0, 0.4, -0.35, 0}, {0, 1.0, 0, 1.0});
 
     // Create our fragment and vertex shaders
-    Shader shader("/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shaders/vert.vs", "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shaders/frag.fs");
 
-    Texture texture("/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/amogus2.png", {
-                                                                                              0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,   // top right
-                                                                                              0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,  // bottom right
-                                                                                              -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
-                                                                                              -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f,  // top left
-                                                                                              0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,   // top right
-                                                                                              -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f  // bottom left
-                                                                                          });
+    // Texture texture("/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/amogus2.png", {
+    //       0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,   // top right
+    //       0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,  // bottom right
+    //       -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
+    //       -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f,  // top left
+    //       0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,   // top right
+    //       -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f  // bottom left
+    //   });
 
     // Make a vector of star objects
 
     std::vector<Star> stars;
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < 10; i++)
     {
-        Star temp(glm::vec3(i, -i, 2 * i));
-        stars.push_back(temp);
+        for (int j = 0; j < 10; j++)
+        {
+            for (int k = 0; k < 10; k++)
+            {
+
+                Star temp(&globalShader, glm::vec3(10 * i, 10 * j, 10 * k));
+                stars.push_back(temp);
+            }
+        }
     }
 
-    player.createPlayerObject();
+    player.createPlayerObject(&globalShader);
 
-    Star cameraStar(glm::vec3(1.0f, 1.0f, 1.0f));
-    Star directionStar(glm::vec3(1.0f, 1.0f, 1.0f));
+    Star cameraStar(&globalShader, glm::vec3(1.0f, 1.0f, 1.0f));
+    Star directionStar(&globalShader, glm::vec3(1.0f, 1.0f, 1.0f));
 
     // Main Loop of the function
     while (!glfwWindowShouldClose(window))
@@ -173,6 +181,8 @@ int main()
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
+        std::cout << "FPS: " << 1/deltaTime << std::endl; 
+
         // Clear the screen before we start
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -191,7 +201,6 @@ int main()
 
         cameraStar.position = player.getCameraPosition();
         cameraStar.render(0.1, camera.getViewMatrix(), camera.getProjectionMatrix());
-
 
         player.render();
         object.render(camera.getViewMatrix(), camera.getProjectionMatrix(), GL_LINES);
