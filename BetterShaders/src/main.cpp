@@ -142,18 +142,23 @@ int main()
     Object object(&globalShader, shipSprite, {1.0, 1.0, 1.0, 1.0});
 
     // Make a vector of star objects
-    unsigned int amount = 10000;
+    unsigned int amount = 0;
     std::vector<glm::vec3> stars; 
 
     Shader starShader("/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shaders/vertInstanced.vs", "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shaders/fragInstanced.fs");
 
-    for (int i = 0; i < 10000; i++)
+    for (int i = 0; i < 100; i++)
     {
-        glm::vec3 position; 
-        position.x = i;
-        position.y = i % 3;
-        position.z = 2 * i % 5 * sin(glfwGetTime() * i);
-        stars.push_back(position); 
+        for(int j = 0; j < 100; j++){
+            for(int k = 0; k < 100; k++){
+                amount++; 
+                glm::vec3 position; 
+                position.x = i + sin(glfwGetTime());
+                position.y = j + cos(glfwGetTime());
+                position.z = k + tan(glfwGetTime());
+                stars.push_back(position); 
+            }
+        }
     }
 
     unsigned int VBO; 
@@ -162,7 +167,7 @@ int main()
 
     glGenBuffers(1, &instanceVBO); 
     glBindBuffer(GL_ARRAY_BUFFER, instanceVBO); 
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * stars.size(), stars.data(), GL_STATIC_DRAW); 
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * stars.size(), stars.data(), GL_STATIC_DRAW); 
     glBindBuffer(GL_ARRAY_BUFFER, 0); 
 
     glGenBuffers(1, &VBO);
@@ -175,8 +180,8 @@ int main()
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
-    glBindBuffer(GL_ARRAY_BUFFER, instanceVBO); 
     glEnableVertexAttribArray(1);  
+    glBindBuffer(GL_ARRAY_BUFFER, instanceVBO); 
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0); 
     glVertexAttribDivisor(1, 1); 
 
@@ -200,28 +205,26 @@ int main()
         // Process input call
         processInput(window);
 
-        object.matrixTransform(glm::rotate(object.model, glm::radians(1.001f), glm::vec3(0.0f, 0.0f, 1.0f)));
-        object.matrixTransform(glm::rotate(object.model, glm::radians(3.001f), glm::vec3(0.0f, 1.0f, 0.0f)));
 
-        // // SLOW ALERT!!! YOWZA
-        // for (Star star : stars)
-        // {
-        //     star.render(deltaTime, camera.getViewMatrix(), camera.getProjectionMatrix());
-        // }
         starShader.use();
-        starShader.setVec4("aColor", {1.0f, 0.0f, 0.0f, 1.0f}); 
+        starShader.setVec4("aColor", {1.0f, 0.50f, 0.0f, 1.0f}); 
         starShader.setMat4("projection", camera.getProjectionMatrix());
         starShader.setMat4("view", camera.getViewMatrix()); 
         starShader.setMat4("model", glm::mat4(1.0f)); 
-        glBindVertexArray(VBO); 
+        glBindVertexArray(VAO); 
         glDrawArraysInstanced(GL_LINES, 0, starVertices.size(), amount); 
         glBindVertexArray(0); 
 
         cameraStar.position = player.getCameraPosition();
         cameraStar.render(0.1, camera.getViewMatrix(), camera.getProjectionMatrix());
 
+        
         player.render();
+        
+        object.matrixTransform(glm::rotate(object.model, glm::radians(1.001f), glm::vec3(0.0f, 0.0f, 1.0f)));
+        object.matrixTransform(glm::rotate(object.model, glm::radians(3.001f), glm::vec3(0.0f, 1.0f, 0.0f)));
         object.render(camera.getViewMatrix(), camera.getProjectionMatrix(), GL_LINES);
+        glBindVertexArray(0); 
 
         // texture.transform = glm::rotate(texture.transform, glm::radians(10.0f), glm::vec3(1.0f, 2.5f, 0.0f));
         // texture.render();

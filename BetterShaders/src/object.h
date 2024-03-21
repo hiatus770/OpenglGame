@@ -70,5 +70,16 @@ public:
         glDrawArrays(mode, 0, vertices.size()); 
     }
 
+    void renderInstanced(glm::mat4 view, glm::mat4 projection, GLenum mode = GL_LINES){ 
+        shader->use(); 
+        shader->setVec4("color", objColor); 
+        shader->setMat4("model", model); 
+        shader->setMat4("view", view); 
+        shader->setMat4("projection", projection); 
+        glBindVertexArray(VAO); 
+        glDrawArraysInstanced(mode, 0, 6, 10000); 
+        glDrawArrays(mode, 0, vertices.size()); 
+    }
+
 };
 #endif 
