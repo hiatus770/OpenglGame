@@ -12,8 +12,8 @@
 
 #include "texture.h"
 
-const int SRC_WIDTH = 1920;
-const int SRC_HEIGHT = 1080;
+const int SRC_WIDTH = 1000;
+const int SRC_HEIGHT = 1000;
 
 #include "camera.h"
 
@@ -66,30 +66,7 @@ float vertices[] = {
     0.5f, -0.5f, 0.0f,
     0.0f, 0.5f, 0.0f};
 
-// Player player({
-//     // Shaft of the arrow
-//     0.0f,  0.0f,  0.0f,  // Start point
-//     0.0f,  0.0f, -1.0f,  // End point
 
-//     // First line of the arrowhead
-//     0.0f,  0.0f, -1.0f,  // Start point
-//    -0.25f,  0.25f, 0.5f,  // End point
-
-//     // Second line of the arrowhead
-//     0.0f,  0.0f, -1.0f,  // Start point
-//     0.25f,  0.25f, 0.5f   // End point
-// });
-
-// Player player({
-//     0.1f, 0.0f, -0.1f,
-//     0.0f, 0.0f, 0.0f,
-
-//     -0.1f, 0.0f, -0.1f,
-//     0.0f, 0.0f, 0.0f,
-
-//     0.0f, 0.1f, -0.2f,
-//     0.0f, 0.0f, 0.0f
-// });
 
 Player player(shipSprite);
 
@@ -147,15 +124,15 @@ int main()
 
     Shader starShader("/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shaders/vertInstanced.vs", "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shaders/fragInstanced.fs");
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 50; i++)
     {
-        for(int j = 0; j < 10; j++){
-            for(int k = 0; k < 10; k++){
+        for(int j = 0; j < 100; j++){
+            for(int k = 0; k < 100; k++){
                 amount++; 
                 glm::vec3 position; 
-                position.x = i + rand()%10;
-                position.y = j + rand()%10;
-                position.z = k + rand()%10;
+                position.x = i;// + rand()%300;
+                position.y = j;//  + rand()%300;
+                position.z = k;// + rand()%300;
                 stars.push_back(position); 
             }
         }
