@@ -12,8 +12,8 @@
 
 #include "texture.h"
 
-const int SRC_WIDTH = 600;
-const int SRC_HEIGHT = 600;
+const int SRC_WIDTH = 1920;
+const int SRC_HEIGHT = 1080;
 
 #include "camera.h"
 
@@ -147,15 +147,15 @@ int main()
 
     Shader starShader("/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shaders/vertInstanced.vs", "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shaders/fragInstanced.fs");
 
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < 10; i++)
     {
-        for(int j = 0; j < 100; j++){
-            for(int k = 0; k < 100; k++){
+        for(int j = 0; j < 10; j++){
+            for(int k = 0; k < 10; k++){
                 amount++; 
                 glm::vec3 position; 
-                position.x = i + sin(glfwGetTime());
-                position.y = j + cos(glfwGetTime());
-                position.z = k + tan(glfwGetTime());
+                position.x = i + rand()%10;
+                position.y = j + rand()%10;
+                position.z = k + rand()%10;
                 stars.push_back(position); 
             }
         }

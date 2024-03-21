@@ -68,9 +68,9 @@ public:
         if (dir == BACKWARD)
             position -= velocity * direction;
         if (dir == ROLL_LEFT)
-            localUp = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(1.0f), direction)) * localUp;
+            localUp = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(1.0f * rotateVelocity), direction)) * localUp;
         if (dir == ROLL_RIGHT)
-            localUp = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(-1.0f), direction)) * localUp;
+            localUp = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(-1.0f * rotateVelocity), direction)) * localUp;
         if (dir == PITCH_UP)
         {
             direction = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(1.0f * rotateVelocity), right)) * direction;
