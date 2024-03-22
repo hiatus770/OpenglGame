@@ -5,7 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-const int STARS_PER_CHUNK = 100;
+const int STARS_PER_CHUNK = 1000;
 
 class StarChunk
 {
@@ -28,22 +28,24 @@ public:
 
     void generateStarVertices()
     {
-            srand(100000 * chunkZ +1000 * chunkX + chunkY);
+        srand(400 * (int)chunkZ + 1000 * (int)chunkX + (int)chunkY);
+        
         for (int i = 0; i < STARS_PER_CHUNK; i++)
         {
             glm::vec3 position;
-            position.x = (rand() % CHUNK_SIZE * 100) / 100;
-            position.y = (rand() % CHUNK_SIZE * 100) / 100;
-            position.z = (rand() % CHUNK_SIZE * 100) / 100;
+            position.x = (float)(rand() % (CHUNK_SIZE * 100)) / 100.0f;
+            position.y = (float)(rand() % (CHUNK_SIZE * 100)) / 100;
+            position.z = (float)(rand() % (CHUNK_SIZE * 100)) / 100;
+            std::cout << position.x << std::endl; 
             starsPositions.push_back(position);
         }
     }
 
     void init(glm::vec3 pos)
     {
-        chunkX = pos.x; 
-        chunkY = pos.y;
-        chunkZ = pos.z; 
+        chunkX = (float)pos.x; 
+        chunkY = (float)pos.y;
+        chunkZ = (float)pos.z; 
 
         generateStarVertices();
         // Create shader

@@ -13,7 +13,7 @@
 const int SRC_WIDTH = 1920;
 const int SRC_HEIGHT = 1080;
 
-const int CHUNK_SIZE = 10; 
+const int CHUNK_SIZE = 100; 
 
 #include "camera.h"
 
@@ -175,15 +175,13 @@ int main()
     localChunks[5] = new StarChunk(0,0,0);   // +y  
     localChunks[6] = new StarChunk(0,0,0);   // -y  
     for(int i = 0; i < 7; i++){
-        localChunks[i]->init(glm::vec3(1.0f, 1.0f, 1.0f)); 
+        localChunks[i]->init(glm::vec3(0.0f, 0.0f, 0.0f)); 
     }
     
-    StarChunk* chunk; 
-    chunk = new StarChunk(0,0,0); 
-    chunk->init(glm::vec3(0.0f, 0.0f, 0.0f)); 
+
 
     glm::vec3 playerChunkCoords(1.0f, 1.0f, 1.0f); 
-    glm::vec3 lastPlayerChunkCoords(10.f, 1.0f, 1.0f); 
+    glm::vec3 lastPlayerChunkCoords(2.0f, 1.0f, 1.0f); 
 
     // Main Loop of the function
     while (!glfwWindowShouldClose(window))
@@ -205,13 +203,13 @@ int main()
         if (playerChunkCoords.x - lastPlayerChunkCoords.x != 0 || playerChunkCoords.z != lastPlayerChunkCoords.z || playerChunkCoords.y != lastPlayerChunkCoords.y){
             // We changed position between frames make new StarChunk 
             // chunk->init(playerChunkCoords); 
-            localChunks[0]->init(playerChunkCoords + glm::vec3{0.0f, 0.0f, 0.0f}); 
-            localChunks[1]->init(playerChunkCoords + glm::vec3{1.0f, 0.0f, 0.0f});  
-            localChunks[2]->init(playerChunkCoords + glm::vec3{-1.0f, 0.0f, 0.0f});  
-            localChunks[3]->init(playerChunkCoords + glm::vec3{0.0f, 0.0f, 1.0f});  
-            localChunks[4]->init(playerChunkCoords + glm::vec3{0.0f, 0.0f, -1.0f});  
-            localChunks[5]->init(playerChunkCoords + glm::vec3{0.0f, 1.0f, 0.0f});  
-            localChunks[6]->init(playerChunkCoords + glm::vec3{0.0f, -1.0f, 0.0f});  
+            localChunks[0]->init(playerChunkCoords + glm::vec3{0.0, 0.0, 0.0}); 
+            localChunks[1]->init(playerChunkCoords + glm::vec3{1.0, 0.0, 0.0});  
+            localChunks[2]->init(playerChunkCoords + glm::vec3{-1.0, 0.0, 0.0});  
+            localChunks[3]->init(playerChunkCoords + glm::vec3{0.0, 0.0, 1.0});  
+            localChunks[4]->init(playerChunkCoords + glm::vec3{0.0, 0.0, -1.0});  
+            localChunks[5]->init(playerChunkCoords + glm::vec3{0.0, 1.0, 0.0});  
+            localChunks[6]->init(playerChunkCoords + glm::vec3{0.0, -1.0, 0.0});  
         }
 
         // Process input call
@@ -236,7 +234,7 @@ int main()
         for(int i = 0; i < 7; i++){
             localChunks[i]->render(); 
         }
-        
+
         // object.matrixTransform(glm::rotate(object.model, glm::radians(1.001f), glm::vec3(0.0f, 0.0f, 1.0f)));
         // object.matrixTransform(glm::rotate(object.model, glm::radians(3.001f), glm::vec3(0.0f, 1.0f, 0.0f)));
         // object.render(camera.getViewMatrix(), camera.getProjectionMatrix(), GL_LINES);
@@ -359,12 +357,14 @@ void processInput(GLFWwindow *window)
     camera.position = player.getCameraPosition();
     camera.direction = player.getCameraDirection();
     camera.cameraUp = player.getCameraUp();
+    camera.projection =  glm::perspective(glm::radians(60.0f), (float)SRC_WIDTH/SRC_HEIGHT, 0.1f, 100.0f); 
 
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
     {
         // Global camera mode
-        camera.position = player.position + glm::vec3(10.0f, 10.0f, 10.f);
+        camera.position = player.position + glm::vec3(20.0f, 20.0f, 20.f);
         camera.direction = glm::vec3(-1.0f, -1.0f, -1.0f);
         camera.cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+        camera.projection =  glm::perspective(glm::radians(90.0f), (float)SRC_WIDTH/SRC_HEIGHT, 0.1f, 100.0f); 
     }
 }
