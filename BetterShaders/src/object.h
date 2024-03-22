@@ -36,30 +36,36 @@ public:
             objColor.push_back(color[i]); 
         }
 
-        //shader = new Shader("/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shaders/vert.vs", "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shaders/frag.fs");
-
-
+        // Gen VAO and VBO 
         glGenBuffers(1, &VBO); 
-        glGenVertexArrays(1, &VAO); // Generate 1 
+        glGenVertexArrays(1, &VAO); 
 
+        // Bind VAO 
         glBindVertexArray(VAO); 
         glBindBuffer(GL_ARRAY_BUFFER, VBO); 
         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertices.size(), vertices.data(), GL_STATIC_DRAW); 
+        // Assumes we are doing 3 floats 
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0); 
+        // Enable this attribute now in the shader 
         glEnableVertexAttribArray(0);
-
-
     }
 
-
-
-    void matrixTransform(glm::mat4 transformation){
-        // transform = transform * transformation; 
+    /**
+     * @brief Sets the model matrix to mat4 transformation, tbh idk why this is needed 
+     * 
+     * @param transformation 
+     */
+    void matrixTransform(glm::mat4 transformation){ 
         model = transformation; 
-        // shader->use(); 
-        // shader->setMat4("model", model); 
     }
 
+    /**
+     * @brief Renders a given object using a projection matrix, view matrix and other stuff 
+     * 
+     * @param view 
+     * @param projection 
+     * @param mode 
+     */
     void render(glm::mat4 view, glm::mat4 projection, GLenum mode = GL_LINES){
         shader->use(); 
         shader->setVec4("color", objColor); 
@@ -67,17 +73,6 @@ public:
         shader->setMat4("view", view); 
         shader->setMat4("projection", projection); 
         glBindVertexArray(VAO); 
-        glDrawArrays(mode, 0, vertices.size()); 
-    }
-
-    void renderInstanced(glm::mat4 view, glm::mat4 projection, GLenum mode = GL_LINES){ 
-        shader->use(); 
-        shader->setVec4("color", objColor); 
-        shader->setMat4("model", model); 
-        shader->setMat4("view", view); 
-        shader->setMat4("projection", projection); 
-        glBindVertexArray(VAO); 
-        glDrawArraysInstanced(mode, 0, 6, 10000); 
         glDrawArrays(mode, 0, vertices.size()); 
     }
 

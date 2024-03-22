@@ -5,15 +5,15 @@
 #include "object.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
 #include "texture.h"
 
-const int SRC_WIDTH = 1000;
-const int SRC_HEIGHT = 1000;
+const int SRC_WIDTH = 1920;
+const int SRC_HEIGHT = 1080;
+
+const int CHUNK_SIZE = 10; 
 
 #include "camera.h"
 
@@ -52,6 +52,7 @@ Camera camera; // Global Camera for the entire code thing :)
 
 #include "player.h"
 #include "star.h"
+#include "starChunk.h"
 
 // Whenever the window is changed this function is called
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
@@ -66,16 +67,7 @@ float vertices[] = {
     0.5f, -0.5f, 0.0f,
     0.0f, 0.5f, 0.0f};
 
-
-
 Player player(shipSprite);
-
-bool firstMouse = true;
-float yaw = -90.0f;
-float pitch = 0.0f;
-float roll = 0.0f;
-float lastX = SRC_WIDTH / 2.0;
-float lastY = SRC_HEIGHT / 2.0;
 
 // timing
 float deltaTime = 0.0f; // time between current frame and last frame
@@ -84,6 +76,8 @@ float lastFrame = 0.0f;
 int main()
 {
     std::cout << "Making Window!" << std::endl;
+
+    // ------------ OPENGL INTIALIZATION ----------------------
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);                 // The major version so x.x the first x
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);                 // The minor version of GLFW we are using so x.x the second x
@@ -92,13 +86,13 @@ int main()
     // Creating the window object
     GLFWwindow *window = glfwCreateWindow(SRC_WIDTH, SRC_HEIGHT, "Moverment", NULL, NULL);
 
-    // If it wasn't created then we stop here
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW Window" << std::endl;
         glfwTerminate();
         return -1;
     }
+    
     glfwMakeContextCurrent(window);
 
     // Load GLAD function pointers so that we use the correct openGL functions
@@ -108,14 +102,16 @@ int main()
         return -1;
     }
 
-    // Set the frameBufferSizeballback function
+    // OPENGL INITIALIZATION
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glEnable(GL_DEPTH_TEST);
     // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetCursorPosCallback(window, mouse_callback);
 
+    // The global shader for the program 
     Shader globalShader("/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shaders/vert.vs", "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shaders/frag.fs");
 
+    // The test object 
     Object object(&globalShader, shipSprite, {1.0, 1.0, 1.0, 1.0});
 
     // Make a vector of star objects
@@ -162,10 +158,32 @@ int main()
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0); 
     glVertexAttribDivisor(1, 1); 
 
+
+
+    // Create player object 
     player.createPlayerObject(&globalShader);
 
     Star cameraStar(&globalShader, glm::vec3(1.0f, 1.0f, 1.0f));
     Star directionStar(&globalShader, glm::vec3(1.0f, 1.0f, 1.0f));
+
+    StarChunk *localChunks[7]; 
+    localChunks[0] = new StarChunk(0,0,0);   // 0,0 
+    localChunks[1] = new StarChunk(0,0,0);   // +x  
+    localChunks[2] = new StarChunk(0,0,0);   // -x  
+    localChunks[3] = new StarChunk(0,0,0);   // +z  
+    localChunks[4] = new StarChunk(0,0,0);   // -z  
+    localChunks[5] = new StarChunk(0,0,0);   // +y  
+    localChunks[6] = new StarChunk(0,0,0);   // -y  
+    for(int i = 0; i < 7; i++){
+        localChunks[i]->init(glm::vec3(1.0f, 1.0f, 1.0f)); 
+    }
+    
+    StarChunk* chunk; 
+    chunk = new StarChunk(0,0,0); 
+    chunk->init(glm::vec3(0.0f, 0.0f, 0.0f)); 
+
+    glm::vec3 playerChunkCoords(1.0f, 1.0f, 1.0f); 
+    glm::vec3 lastPlayerChunkCoords(10.f, 1.0f, 1.0f); 
 
     // Main Loop of the function
     while (!glfwWindowShouldClose(window))
@@ -179,32 +197,55 @@ int main()
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        // Calculate Player chunk coord difference 
+        playerChunkCoords.x = floor(player.position.x / CHUNK_SIZE); 
+        playerChunkCoords.y = floor(player.position.y / CHUNK_SIZE); 
+        playerChunkCoords.z = floor(player.position.z / CHUNK_SIZE); 
+
+        if (playerChunkCoords.x - lastPlayerChunkCoords.x != 0 || playerChunkCoords.z != lastPlayerChunkCoords.z || playerChunkCoords.y != lastPlayerChunkCoords.y){
+            // We changed position between frames make new StarChunk 
+            // chunk->init(playerChunkCoords); 
+            localChunks[0]->init(playerChunkCoords + glm::vec3{0.0f, 0.0f, 0.0f}); 
+            localChunks[1]->init(playerChunkCoords + glm::vec3{1.0f, 0.0f, 0.0f});  
+            localChunks[2]->init(playerChunkCoords + glm::vec3{-1.0f, 0.0f, 0.0f});  
+            localChunks[3]->init(playerChunkCoords + glm::vec3{0.0f, 0.0f, 1.0f});  
+            localChunks[4]->init(playerChunkCoords + glm::vec3{0.0f, 0.0f, -1.0f});  
+            localChunks[5]->init(playerChunkCoords + glm::vec3{0.0f, 1.0f, 0.0f});  
+            localChunks[6]->init(playerChunkCoords + glm::vec3{0.0f, -1.0f, 0.0f});  
+        }
+
         // Process input call
         processInput(window);
 
+        // Instancing Stuff! 
+        // starShader.use();
+        // starShader.setVec4("aColor", {1.0f, 0.50f, 0.0f, 1.0f}); 
+        // starShader.setMat4("projection", camera.getProjectionMatrix());
+        // starShader.setMat4("view", camera.getViewMatrix()); 
+        // starShader.setMat4("model", glm::mat4(1.0f)); 
+        // glBindVertexArray(VAO); 
+        // glDrawArraysInstanced(GL_LINES, 0, starVertices.size(), amount); 
+        // glBindVertexArray(0); 
 
-        starShader.use();
-        starShader.setVec4("aColor", {1.0f, 0.50f, 0.0f, 1.0f}); 
-        starShader.setMat4("projection", camera.getProjectionMatrix());
-        starShader.setMat4("view", camera.getViewMatrix()); 
-        starShader.setMat4("model", glm::mat4(1.0f)); 
-        glBindVertexArray(VAO); 
-        glDrawArraysInstanced(GL_LINES, 0, starVertices.size(), amount); 
-        glBindVertexArray(0); 
-
+        // Debug purposes for showing where the camera is! 
         cameraStar.position = player.getCameraPosition();
         cameraStar.render(0.1, camera.getViewMatrix(), camera.getProjectionMatrix());
 
-        
+        // All render calls should go here! 
         player.render();
+        for(int i = 0; i < 7; i++){
+            localChunks[i]->render(); 
+        }
         
-        object.matrixTransform(glm::rotate(object.model, glm::radians(1.001f), glm::vec3(0.0f, 0.0f, 1.0f)));
-        object.matrixTransform(glm::rotate(object.model, glm::radians(3.001f), glm::vec3(0.0f, 1.0f, 0.0f)));
-        object.render(camera.getViewMatrix(), camera.getProjectionMatrix(), GL_LINES);
-        glBindVertexArray(0); 
+        // object.matrixTransform(glm::rotate(object.model, glm::radians(1.001f), glm::vec3(0.0f, 0.0f, 1.0f)));
+        // object.matrixTransform(glm::rotate(object.model, glm::radians(3.001f), glm::vec3(0.0f, 1.0f, 0.0f)));
+        // object.render(camera.getViewMatrix(), camera.getProjectionMatrix(), GL_LINES);
+        // glBindVertexArray(0); 
 
         // texture.transform = glm::rotate(texture.transform, glm::radians(10.0f), glm::vec3(1.0f, 2.5f, 0.0f));
         // texture.render();
+
+        lastPlayerChunkCoords = playerChunkCoords; 
 
         glfwSwapBuffers(window); // Swaps the color buffer that is used to render to during this render iteration and show it ot the output screen
         glfwPollEvents();        // Checks if any events are triggered, updates the window state andcalls the corresponding functions
@@ -220,6 +261,7 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
     glViewport(0, 0, width, height);
 }
 
+// Currently no mouse controls are enabled 
 void mouse_callback(GLFWwindow *window, double xposIn, double yposIn)
 {
     // float xpos = static_cast<float>(xposIn);
@@ -255,6 +297,11 @@ void mouse_callback(GLFWwindow *window, double xposIn, double yposIn)
     // cameraFront = glm::normalize(direction);
 }
 
+/**
+ * @brief Handles all user input given the window object, currently handles player movement 
+ * 
+ * @param window 
+ */
 void processInput(GLFWwindow *window)
 {
 
