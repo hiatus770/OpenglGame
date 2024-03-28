@@ -28,7 +28,7 @@ enum Player_Movement
     YAW_RIGHT
 };
 
-const glm::vec3 cameraOffset = glm::vec3(-3.0f, 1.0f, 0.0f);
+const glm::vec3 cameraOffset = glm::vec3(-2.0f, 0.5f, 0.0f);
 
 class Player
 {
@@ -153,7 +153,7 @@ public:
 
         playerObj->model = (glm::translate(glm::mat4(1.0f), position)) * rotation;
 
-        playerObj->render(camera.getViewMatrix(), camera.getProjectionMatrix(), GL_LINES);
+        playerObj->render(camera.getViewMatrix(), camera.getProjectionMatrix(), GL_TRIANGLE_STRIP);
     }
 
 
