@@ -9,8 +9,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-const float MovementSpeed = 2.5;
-const float RotateMovementSpeed = 50; 
 
 enum Player_Movement
 {
@@ -30,6 +28,7 @@ enum Player_Movement
 
 const glm::vec3 cameraOffset = glm::vec3(-2.0f, 0.5f, 0.0f);
 
+// const glm::vec3 cameraOffset = glm::vec3(0.0f, 0.0f, 0.0f);
 class Player
 {
 public:
@@ -39,7 +38,11 @@ public:
     std::vector<float> vertices;
     std::vector<float> color;
     Object *playerObj;
-    Shader *shader; 
+    Shader *shader;
+    float velocity; 
+    float rotateVelocity; 
+    float RotateMovementSpeed = 50;
+    float MovementSpeed = 2.5;
 
     Player(std::vector<float> Vertices, glm::vec3 Position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 Direction = glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3 LocalUp = glm::vec3(0.0f, 1.0f, 0.0f))
     {
@@ -49,8 +52,7 @@ public:
         vertices = Vertices;
     }
 
-
-    void createPlayerObject(Shader* gShader)
+    void createPlayerObject(Shader *gShader)
     {
         playerObj = new Object(gShader, vertices, {1.0f, 1.0f, 0.0f, 1.0f});
         playerObj->matrixTransform(glm::translate(playerObj->model, position));
@@ -60,13 +62,15 @@ public:
     {
         glm::vec3 right = glm::normalize(glm::cross(direction, localUp)); // Assuming world up is y-axis
 
-        float velocity = MovementSpeed * deltaTime;
-        float rotateVelocity = RotateMovementSpeed * deltaTime; 
+        velocity = MovementSpeed * deltaTime;
+        rotateVelocity = RotateMovementSpeed * deltaTime;
 
         if (dir == FORWARD)
-            position += velocity * direction;
+            // position += velocity * direction;
+            MovementSpeed += 0.25; 
         if (dir == BACKWARD)
-            position -= velocity * direction;
+            MovementSpeed -= 0.25; 
+            // position -= velocity * direction;
         if (dir == ROLL_LEFT)
             localUp = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(1.0f * rotateVelocity), direction)) * localUp;
         if (dir == ROLL_RIGHT)
@@ -78,7 +82,7 @@ public:
         }
         if (dir == PITCH_DOWN)
         {
-            direction = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(-1.0f * rotateVelocity), right)) * direction; 
+            direction = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(-1.0f * rotateVelocity), right)) * direction;
             localUp = glm::mat3(glm::rotate(glm::mat4(1.0f), glm::radians(-1.0f * rotateVelocity), right)) * localUp;
         }
 
@@ -113,21 +117,24 @@ public:
         }
 
 
+        
     }
 
+    void update(){
+        position += velocity * direction;
+    }
 
     glm::vec3 getCameraOffset()
     {
-        // return glm::vec3(0); // Actually use the vector components this time please 
-        return glm::normalize(localUp) * cameraOffset.y + glm::normalize(direction) * cameraOffset.x + glm::normalize(glm::cross(localUp, direction)) *cameraOffset.z;
+        // return glm::vec3(0); // Actually use the vector components this time please
+        return glm::normalize(localUp) * cameraOffset.y + glm::normalize(direction) * cameraOffset.x + glm::normalize(glm::cross(localUp, direction)) * cameraOffset.z;
     }
 
     glm::vec3 getCameraDirection()
     {
-        // return ( position + glm::normalize(direction*-3.0f)) - (position + getCameraOffset()); 
+        // return ( position + glm::normalize(direction*-3.0f)) - (position + getCameraOffset());
         return direction;
     }
-
 
     glm::vec3 getCameraPosition()
     {
@@ -136,7 +143,7 @@ public:
 
     glm::vec3 getCameraUp()
     {
-        return localUp; //getCameraOffset();
+        return localUp; // getCameraOffset();
     }
 
     /**
@@ -153,10 +160,10 @@ public:
 
         playerObj->model = (glm::translate(glm::mat4(1.0f), position)) * rotation;
 
-        playerObj->render(camera.getViewMatrix(), camera.getProjectionMatrix(), GL_TRIANGLE_STRIP);
+        playerObj->render(camera.getViewMatrix(), camera.getProjectionMatrix(), GL_LINES);
     }
 
-
+    void overrideRender(glm::mat4 viewMatrix, glm::mat4 projectionMatrix){}
 
     // Return camera nonsense for the position of the camera, dont actually store the camrea here make a global one!
 };

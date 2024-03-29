@@ -32,7 +32,6 @@ public:
         generateVertices();
 
         //
-        std::cout << "Creating object\n";
         planetObj = new Object(gShader, vertices, color);
 
         // We must generate those vertices tho :o
@@ -43,16 +42,15 @@ public:
         // We already know the type of planet it is so we have 3 cases
         if (type == SPHERE)
         {
-            int ringPoints = 10;    // 10 pounds on each ring of the planet
+            int ringPoints = 20;    // 10 pounds on each ring of the planet
             int ringRotations = 20; // How many rotations of the ring we gonna have
-            float radius = 1;
+            float radius = 10;
             glm::vec3 ring[ringPoints];
             for (int i = 0; i < ringPoints; i++)
             {
                 // parameter t value
                 float t = 2 * M_PI * (i / (float)ringPoints);
                 ring[i] = (glm::vec3(sinf(t) * radius, cosf(t) * radius, 0.0f));
-                std::cout << ring[i].x << " " << ring[i].y << " " << ring[i].z << std::endl;
                 vertices.push_back(ring[i].x);
                 vertices.push_back(ring[i].y);
                 vertices.push_back(ring[i].z);
@@ -78,26 +76,32 @@ public:
                 }
             }
 
-            for (int i = 0; i < ringRotations; i++)
+            ringRotations *= 2; 
+            for (int i = 0; i < ringPoints; i++)
             {
                 // Now we grooving
-                float heightFromBottom = (i * radius) / ringRotations;
+                float heightFromBottom = (i * radius) / ringPoints;
                 // If Calculate the radius that u need to use
-                float tempRadius = sqrtf(radius*radius-(fabs(radius - 2*(i * radius) / ringRotations))*(fabs(radius - 2*(i * radius) / ringRotations))); 
-                std::cout << tempRadius << std::endl; 
+                float tempRadius = sqrtf(radius*radius-(fabs(radius - 2*(i * radius) / ringPoints))*(fabs(radius - 2*(i * radius) / ringPoints))); 
                 // tempRadius = 1; 
                 // Time to do some generatoin now
-                for (int j = 0; j < 2*ringPoints; j++)
+                for (int j = 0; j < ringRotations; j++)
                 {
-                    float t = (4 * M_PI) * (j / (float)(ringPoints*2));
+                    float t = (4 * M_PI) * (j / (float)(ringRotations));
                     glm::vec3 tempPoint = (glm::vec3((float)sinf(t) * tempRadius, 2*heightFromBottom-radius, (float)cosf(t) * tempRadius));
+
+                    vertices.push_back(tempPoint.x);
+                    vertices.push_back(tempPoint.y);
+                    vertices.push_back(tempPoint.z);
+                    
+                    t = (4 * M_PI) * ((j+1) / (float)(ringRotations));
+                    tempPoint = (glm::vec3((float)sinf(t) * tempRadius, 2*heightFromBottom-radius, (float)cosf(t) * tempRadius));
 
                     vertices.push_back(tempPoint.x);
                     vertices.push_back(tempPoint.y);
                     vertices.push_back(tempPoint.z);
                 }
             }
-            std::cout << "Done generating vertices!\n";
             // Radius must also be defined :skull:
             // First we have the y which has a maximum of the -radius to +radius
 

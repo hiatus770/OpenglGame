@@ -15,6 +15,9 @@
 // - make the stars into asteroids that you can interact with and fly around? do i actually want to make a game or whatever sob :sob:  planets make more sense in this case but whats the point in having 300000 of them :sob: 
 // Projectiles? Questions mark??? COnfusion??? and then maybe implement movement with the mouse so it is actually playable buster :sob: 
 // - Actually add coloring and possibly textured things please pretty please please 
+// Make small UI stuff now :sob: 
+// CLEAN UP CLEAN UP 
+// Make the update() function for the palyer not in processInput anymore cause its really annoying in there for future use :pensive: 
 
 const int SRC_WIDTH = 1920;
 const int SRC_HEIGHT = 1080;
@@ -128,8 +131,14 @@ int main()
     Star cameraStar(&globalShader, glm::vec3(1.0f, 1.0f, 1.0f));
     Star directionStar(&globalShader, glm::vec3(1.0f, 1.0f, 1.0f));
 
-    Planet planet(&globalShader, glm::vec3(4.0f, 4.0f, 4.0f)); 
+    Planet planet(&globalShader, glm::vec3(4.0f, 4.0f, 4.0f), {1.0f, 0.0f, 0.0f}); 
     
+    std::vector<Planet> planets;  
+
+    for(int i = 0; i < 100; i++){
+        Planet newPlanet(&globalShader, glm::vec3(rand()%300, rand()%300, rand()%300), {0.0f, 1.0f, 1.0f});
+        planets.push_back(newPlanet);
+    }
 
     glm::vec3 playerChunkCoords(1.0f, 1.0f, 1.0f); 
     glm::vec3 lastPlayerChunkCoords(2.0f, 1.0f, 1.0f); 
@@ -147,15 +156,24 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
+        
         // Process input call
         processInput(window);
 
+        
+        globalShader.setVec3("cameraPos", {player.getCameraPosition().x, player.getCameraPosition().y, player.getCameraPosition().z}); 
+        
         // Debug purposes for showing where the camera is! 
         cameraStar.position = player.getCameraPosition();
+
         cameraStar.render(0.1, camera.getViewMatrix(), camera.getProjectionMatrix());
+
 
         // All render calls should go here! 
         player.render();
+        for(int i = 0; i < planets.size(); i++){
+            planets[i].render(0.1, camera.getViewMatrix(), camera.getProjectionMatrix()); 
+        }
         planet.render(0.1, camera.getViewMatrix(), camera.getProjectionMatrix()); 
 
         // object.matrixTransform(glm::rotate(object.model, glm::radians(1.001f), glm::vec3(0.0f, 0.0f, 1.0f)));
@@ -277,10 +295,13 @@ void processInput(GLFWwindow *window)
         player.localUp = glm::vec3(0.0f, 1.0f, 0.0f);
     }
 
+    // Update calls
+    player.update(); 
+    
     camera.position = player.getCameraPosition();
     camera.direction = player.getCameraDirection();
     camera.cameraUp = player.getCameraUp();
-    camera.projection =  glm::perspective(glm::radians(60.0f), (float)SRC_WIDTH/SRC_HEIGHT, 0.1f, 100.0f); 
+    camera.projection =  glm::perspective(glm::radians(60.0f), (float)SRC_WIDTH/SRC_HEIGHT, 0.1f, 1000.0f); 
 
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
     {
@@ -290,4 +311,6 @@ void processInput(GLFWwindow *window)
         camera.cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
         camera.projection =  glm::perspective(glm::radians(90.0f), (float)SRC_WIDTH/SRC_HEIGHT, 0.1f, 100.0f); 
     }
+
+    
 }

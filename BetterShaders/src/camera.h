@@ -16,7 +16,7 @@ public:
     glm::vec3 cameraUp; // Defining the axis of movement for the camera 
     glm::mat4 projection; 
 
-    Camera(glm::vec3 Position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 Direction = glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3 CameraUp = glm::vec3(0.0f, 1.0f, 0.0f), glm::mat4 Projection = glm::perspective(glm::radians(60.0f), (float)SRC_WIDTH/SRC_HEIGHT, 0.1f, 100.0f)){
+    Camera(glm::vec3 Position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 Direction = glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3 CameraUp = glm::vec3(0.0f, 1.0f, 0.0f), glm::mat4 Projection = glm::perspective(glm::radians(60.0f), (float)SRC_WIDTH/SRC_HEIGHT, 0.1f, 1000.0f)){
         position = Position;
         direction = Direction; 
         cameraUp = CameraUp; 
