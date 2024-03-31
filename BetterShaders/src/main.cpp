@@ -149,7 +149,7 @@ int main()
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
-        // std::cout << "FPS: " << 1 / deltaTime << std::endl;
+        std::cout << "FPS: " << 1 / deltaTime << std::endl;
 
         // Clear the screen before we start
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
