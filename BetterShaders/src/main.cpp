@@ -10,22 +10,23 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "texture.h"
 
+const int SRC_WIDTH = 1920;
+const int SRC_HEIGHT = 1080;
+const int CHUNK_SIZE = 10;
+const int STARS_PER_CHUNK = 100;  
+const int PLANETS_PER_CHUNK = 100;
+
+#include "camera.h"
 
 // TODO
 // - make the stars into asteroids that you can interact with and fly around? do i actually want to make a game or whatever sob :sob:  planets make more sense in this case but whats the point in having 300000 of them :sob: 
 // Projectiles? Questions mark??? COnfusion??? and then maybe implement movement with the mouse so it is actually playable buster :sob: 
 // - Actually add coloring and possibly textured things please pretty please please 
 // Make small UI stuff now :sob: 
+// Pplanet chunking is next, make sure they chunk normally, then add different planet types? and then uhhh idk, make them interactive somehow :wink: 
 // CLEAN UP CLEAN UP 
 // Make the update() function for the palyer not in processInput anymore cause its really annoying in there for future use :pensive: 
 
-const int SRC_WIDTH = 1920;
-const int SRC_HEIGHT = 1080;
-
-const int CHUNK_SIZE = 10;
-const int STARS_PER_CHUNK = 100;  
-
-#include "camera.h"
 
 // Sprit needed for player class
 std::vector<float> shipSprite = {
@@ -64,6 +65,7 @@ Camera camera; // Global Camera for the entire code thing :)
 #include "star.h"
 #include "starChunk.h"
 #include "planet.h"
+#include "planetChunk.h"
 
 // Whenever the window is changed this function is called
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);

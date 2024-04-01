@@ -18,6 +18,8 @@ class Planet
 public:
     Object *planetObj;
     glm::vec3 position;
+    glm::vec3 zAxis; 
+    glm::vec3 yAxis; 
     std::vector<float> color;
     glm::vec3 rotAxis = glm::vec3(0.0f, 1.0f, 0.0f);
     std::vector<float> vertices;
