@@ -72,3 +72,15 @@
             localChunks[5]->init(playerChunkCoords + glm::vec3{0.0, 1.0, 0.0});  
             localChunks[6]->init(playerChunkCoords + glm::vec3{0.0, -1.0, 0.0});  
         }
+
+
+
+
+RANDOM TEXTURE DRAWING CODE TO BE USED FOR UI IN THE FUTURE!
+`        // object.matrixTransform(glm::rotate(object.model, glm::radians(1.001f), glm::vec3(0.0f, 0.0f, 1.0f)));
+        // object.matrixTransform(glm::rotate(object.model, glm::radians(3.001f), glm::vec3(0.0f, 1.0f, 0.0f)));
+        // object.render(camera.getViewMatrix(), camera.getProjectionMatrix(), GL_LINES);
+        // glBindVertexArray(0); 
+
+        // texture.transform = glm::rotate(texture.transform, glm::radians(10.0f), glm::vec3(1.0f, 2.5f, 0.0f));
+        // texture.render()

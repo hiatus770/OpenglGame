@@ -12,11 +12,11 @@ public:
     glm::vec3 chunkPosition;  
     // Data used to describe the position and orientation of each planet 
     std::vector<glm::vec3> planetPositions; 
-    std::vector<glm::vec3> planetZ; 
-    std::vector<glm::vec3> planetY; 
+    std::vector<glm::vec3> planetRotAxis; 
 
     // Hold a vector of planets :sunglasses:
-    std::vector<Planet> planetList; 
+    std::vector<Planet> planetList;     
+    // Planet planetList[PLANETS_PER_CHUNK];  
 
     Shader *planetShader;
 
@@ -24,7 +24,8 @@ public:
         chunkPosition = ChunkPosition; 
         planetShader = gShader; 
     
-        generatePlanetData(); 
+        generatePlanetData(); // Generates the data for each planet
+         
     
 
 
@@ -33,17 +34,29 @@ public:
 
     void generatePlanetData(){
         planetPositions.clear(); 
-        planetZ.clear(); 
-        planetY.clear();
-        
+        planetRotAxis.clear(); 
 
-        srand(10000 * (int)chunkPosition.x + 10000*(int)chunkPosition.y + 100*chunkPosition.z ); 
+
+        srand(10000 * (int)chunkPosition.x + 1000*(int)chunkPosition.y + 100*chunkPosition.z ); 
 
         for (int i = 0; i < PLANETS_PER_CHUNK; i++){
             glm::vec3 position; 
-            glm::vec3 zAxis; 
-            glm::vec3 yAxis;
-            position.x = 
+            glm::vec3 rotAxis; 
+            // Randomly generate some axes for rotation
+            rotAxis.x = (rand()%100); 
+            rotAxis.y = (rand()%100); 
+            rotAxis.z = (rand()%100); 
+            rotAxis = glm::normalize(rotAxis); 
+            
+
+            // Now generate coordinates inside of the area defined by the chunk coordinates  
+            position.x = (float)(rand() % (CHUNK_SIZE * 100)) / 100.0f;
+            position.y = (float)(rand() % (CHUNK_SIZE * 100)) / 100;
+            position.z = (float)(rand() % (CHUNK_SIZE * 100)) / 100;
+
+            planetPositions.push_back(position); 
+            planetRotAxis.push_back(rotAxis); 
+            // Planet tempPlanet(planetShader, position, )
         }
     }
 

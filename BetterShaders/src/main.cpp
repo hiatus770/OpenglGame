@@ -138,7 +138,7 @@ int main()
     std::vector<Planet> planets;  
 
     for(int i = 0; i < 100; i++){
-        Planet newPlanet(&globalShader, glm::vec3(rand()%300, rand()%300, rand()%300), {0.0f, 1.0f, 1.0f});
+        Planet newPlanet(&globalShader, glm::vec3(rand()%300, rand()%300, rand()%300),glm::normalize(glm::vec3(rand()%300, rand()%300, rand()%300)), {0.0f, 1.0f, 1.0f});
         planets.push_back(newPlanet);
     }
 
@@ -162,14 +162,16 @@ int main()
         // Process input call
         processInput(window);
 
+        // Update the player chunk coordinates 
+        playerChunkCoords.x = floor(player.position.x / CHUNK_SIZE); 
+        playerChunkCoords.y = floor(player.position.y / CHUNK_SIZE); 
+        playerChunkCoords.z = floor(player.position.z / CHUNK_SIZE); 
         
         globalShader.setVec3("cameraPos", {player.getCameraPosition().x, player.getCameraPosition().y, player.getCameraPosition().z}); 
         
         // Debug purposes for showing where the camera is! 
         cameraStar.position = player.getCameraPosition();
-
         cameraStar.render(0.1, camera.getViewMatrix(), camera.getProjectionMatrix());
-
 
         // All render calls should go here! 
         player.render();
@@ -177,14 +179,6 @@ int main()
             planets[i].render(0.1, camera.getViewMatrix(), camera.getProjectionMatrix()); 
         }
         planet.render(0.1, camera.getViewMatrix(), camera.getProjectionMatrix()); 
-
-        // object.matrixTransform(glm::rotate(object.model, glm::radians(1.001f), glm::vec3(0.0f, 0.0f, 1.0f)));
-        // object.matrixTransform(glm::rotate(object.model, glm::radians(3.001f), glm::vec3(0.0f, 1.0f, 0.0f)));
-        // object.render(camera.getViewMatrix(), camera.getProjectionMatrix(), GL_LINES);
-        // glBindVertexArray(0); 
-
-        // texture.transform = glm::rotate(texture.transform, glm::radians(10.0f), glm::vec3(1.0f, 2.5f, 0.0f));
-        // texture.render();
 
         lastPlayerChunkCoords = playerChunkCoords; 
 

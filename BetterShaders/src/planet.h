@@ -13,6 +13,11 @@ enum planetType
     WACKY_AHH_PLANET_SHAPE
 };
 
+/*
+    TODO FOR PLANET
+    - Implement the generateVertices() for all the other planet shapes that you wlil have in the future!
+*/
+
 class Planet
 {
 public:
@@ -22,21 +27,24 @@ public:
     glm::vec3 yAxis; 
     std::vector<float> color;
     glm::vec3 rotAxis = glm::vec3(0.0f, 1.0f, 0.0f);
+    float rotation = 0.0f; 
+    float rotSpeed = 0.2f; 
     std::vector<float> vertices;
     planetType type;
 
-    Planet(Shader *gShader, glm::vec3 Position, std::vector<float> Color = {1.0f, 1.0f, 1.0f, 1.0f}, planetType PlanetType = SPHERE)
+    Planet(Shader *gShader, glm::vec3 Position, glm::vec3 RotAxis, std::vector<float> Color = {1.0f, 1.0f, 1.0f, 1.0f}, planetType PlanetType = SPHERE)
     {
         position = Position;
         color = Color;
         type = PlanetType;
+        rotAxis = RotAxis; 
 
         generateVertices();
 
-        //
+        // Create the planet object 
         planetObj = new Object(gShader, vertices, color);
 
-        // We must generate those vertices tho :o
+
     }
 
     void generateVertices()
@@ -109,12 +117,27 @@ public:
 
             // Cool idea, we make one set of points then rotate it wowee
         }
+
+        // We cook . . .
     }
 
+    /**
+     * @brief Renders the planet and updates its rotation 
+     * 
+     * @param deltaTime change between frames
+     * @param view view matrix 
+     * @param projection camera projection matrix  
+     */
     void render(float deltaTime, glm::mat4 view, glm::mat4 projection)
     {
-
+        rotation += deltaTime * rotSpeed; 
+        // Awhh nell nahh :skulll: 
+        rotAxis = glm::normalize(rotAxis); 
+        float pitch = asin(-rotAxis.y); 
+        float yaw = atan2(rotAxis.x, rotAxis.z); 
+        planetObj->model = glm::rotate(glm::mat4(1.0f), glm::radians(pitch), glm::cross(rotAxis, glm::vec3(rotAxis.x, 0, rotAxis.z)));
         planetObj->model = glm::translate(glm::mat4(1.0f), position);
+        // planetObj->model = glm::rotate(planetObj->model, rotation, rotAxis); 
         planetObj->render(view, projection, GL_LINES);
     }
 };
