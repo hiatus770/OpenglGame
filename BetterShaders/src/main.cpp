@@ -26,7 +26,8 @@ const int PLANETS_PER_CHUNK = 100;
 // Pplanet chunking is next, make sure they chunk normally, then add different planet types? and then uhhh idk, make them interactive somehow :wink: 
 // CLEAN UP CLEAN UP 
 // Make the update() function for the palyer not in processInput anymore cause its really annoying in there for future use :pensive: 
-
+// Fix planet rendering please 
+    // - Angles aren't working properly, they dont rotate correctly, once done make the chunk renderer actually work please pretty please wahoo
 
 // Sprit needed for player class
 std::vector<float> shipSprite = {
