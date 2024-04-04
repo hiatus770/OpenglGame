@@ -52,6 +52,32 @@ public:
         // We already know the type of planet it is so we have 3 cases
         if (type == SPHERE)
         {
+
+            // Drawing the axes
+            vertices.push_back(40.0f); 
+            vertices.push_back(0.0f); 
+            vertices.push_back(0.0f); 
+            
+            vertices.push_back(0.0f); 
+            vertices.push_back(0.0f); 
+            vertices.push_back(0.0f); 
+
+            vertices.push_back(0.0f); 
+            vertices.push_back(40.0f); 
+            vertices.push_back(0.0f); 
+            
+            vertices.push_back(0.0f); 
+            vertices.push_back(0.0f); 
+            vertices.push_back(0.0f); 
+            
+            // vertices.push_back(0.0f); 
+            // vertices.push_back(0.0f); 
+            // vertices.push_back(40.0f); 
+            
+            // vertices.push_back(0.0f); 
+            // vertices.push_back(0.0f); 
+            // vertices.push_back(0.0f); 
+
             int ringPoints = 20;    // 10 pounds on each ring of the planet
             int ringRotations = 20; // How many rotations of the ring we gonna have
             float radius = 10;
@@ -134,10 +160,26 @@ public:
         // Awhh nell nahh :skulll: 
         rotAxis = glm::normalize(rotAxis); 
         float pitch = asin(-rotAxis.y); 
-        float yaw = atan2(rotAxis.x, rotAxis.z); 
-        planetObj->model = glm::rotate(glm::mat4(1.0f), glm::radians(pitch), glm::cross(rotAxis, glm::vec3(rotAxis.x, 0, rotAxis.z)));
-        planetObj->model = glm::translate(glm::mat4(1.0f), position);
-        // planetObj->model = glm::rotate(planetObj->model, rotation, rotAxis); 
+        float yaw = atan2(rotAxis.x, rotAxis.z);
+        
+        glm::vec3 xAxis = glm::vec3(1.0f, 0.0f, 0.0f); 
+        glm::vec3 yAxis = glm::vec3(0.0f, 1.0f, 0.0f);  
+        glm::vec3 zAxis = glm::vec3(0.0f, 0.0f, 1.0f); 
+
+        // Now we play with the axes to rotato 
+        xAxis = xAxis * glm::mat3(glm::rotate(glm::mat4(1.0f), (-yaw), yAxis)); 
+        zAxis = zAxis * glm::mat3(glm::rotate(glm::mat4(1.0f), (-yaw), yAxis)); 
+        
+        planetObj->model = glm::rotate(glm::mat4(1.0f), yaw, yAxis);
+        
+        yAxis = yAxis * glm::mat3(glm::rotate(glm::mat4(1.0f), (pitch), xAxis)); 
+        
+
+    
+        planetObj->model = glm::rotate(planetObj->model, pitch, xAxis); 
+
+        planetObj->model = glm::translate(planetObj->model, position);
+        planetObj->model = glm::rotate(planetObj->model, rotation, glm::vec3(0.0f, 1.0f, 0.0f)); 
         planetObj->render(view, projection, GL_LINES);
     }
 };
