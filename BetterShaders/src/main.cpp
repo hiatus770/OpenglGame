@@ -139,11 +139,11 @@ int main()
     
     std::vector<Planet> planets;  
 
-    for(int i = 0; i < 100; i++){
-        Planet newPlanet(&globalShader, glm::vec3(rand()%300, rand()%300, rand()%300),glm::normalize(glm::vec3(rand()%300, rand()%300, rand()%300)), {0.0f, 1.0f, 1.0f});
-        planets.push_back(newPlanet);
+    // for(int i = 0; i < 100; i++){
+        // Planet newPlanet(&globalShader, glm::vec3(rand()%300, rand()%300, rand()%300),glm::normalize(glm::vec3(rand()%300, rand()%300, rand()%300)), {0.0f, 1.0f, 1.0f});
+        // planets.push_back(newPlanet);
 
-    }
+    // }
 
     glm::vec3 playerChunkCoords(1.0f, 1.0f, 1.0f); 
     glm::vec3 lastPlayerChunkCoords(2.0f, 1.0f, 1.0f); 
@@ -176,9 +176,9 @@ int main()
 
         // All render calls should go here! 
         player.render();
-        for(int i = 0; i < planets.size(); i++){
-            planets[i].render(0.1, camera.getViewMatrix(), camera.getProjectionMatrix()); 
-        }
+        // for(int i = 0; i < planets.size(); i++){
+        //     planets[i].render(0.1, camera.getViewMatrix(), camera.getProjectionMatrix()); 
+        // }
         planet.render(0.1, camera.getViewMatrix(), camera.getProjectionMatrix()); 
 
         lastPlayerChunkCoords = playerChunkCoords; 

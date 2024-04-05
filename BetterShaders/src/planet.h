@@ -52,35 +52,9 @@ public:
         // We already know the type of planet it is so we have 3 cases
         if (type == SPHERE)
         {
-
-            // Drawing the axes
-            vertices.push_back(40.0f); 
-            vertices.push_back(0.0f); 
-            vertices.push_back(0.0f); 
-            
-            vertices.push_back(0.0f); 
-            vertices.push_back(0.0f); 
-            vertices.push_back(0.0f); 
-
-            vertices.push_back(0.0f); 
-            vertices.push_back(40.0f); 
-            vertices.push_back(0.0f); 
-            
-            vertices.push_back(0.0f); 
-            vertices.push_back(0.0f); 
-            vertices.push_back(0.0f); 
-            
-            // vertices.push_back(0.0f); 
-            // vertices.push_back(0.0f); 
-            // vertices.push_back(40.0f); 
-            
-            // vertices.push_back(0.0f); 
-            // vertices.push_back(0.0f); 
-            // vertices.push_back(0.0f); 
-
-            int ringPoints = 20;    // 10 pounds on each ring of the planet
-            int ringRotations = 20; // How many rotations of the ring we gonna have
-            float radius = 10;
+            int ringPoints = 80;    // 10 pounds on each ring of the planet
+            int ringRotations = 80; // How many rotations of the ring we gonna have
+            float radius = 20;
             glm::vec3 ring[ringPoints];
             for (int i = 0; i < ringPoints; i++)
             {
@@ -173,8 +147,6 @@ public:
         planetObj->model = glm::rotate(glm::mat4(1.0f), yaw, yAxis);
         
         yAxis = yAxis * glm::mat3(glm::rotate(glm::mat4(1.0f), (pitch), xAxis)); 
-        
-
     
         planetObj->model = glm::rotate(planetObj->model, pitch, xAxis); 
 

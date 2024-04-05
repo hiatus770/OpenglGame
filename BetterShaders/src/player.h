@@ -99,11 +99,11 @@ public:
         // Strafing keys
         if (dir == STRAFE_LEFT)
         {
-            position -= glm::normalize(glm::cross(direction, localUp)) * fabs(velocity);
+            position -= glm::normalize(glm::cross(direction, localUp)) * fabs(7*deltaTime);
         }
         if (dir == STRAFE_RIGHT)
         {
-            position += glm::normalize(glm::cross(direction, localUp)) * fabs(velocity);
+            position += glm::normalize(glm::cross(direction, localUp)) * fabs(7*deltaTime);
         }
 
         // Rise and Fall keys
