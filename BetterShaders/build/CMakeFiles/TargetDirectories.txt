@@ -1,3 +1,0 @@
-/home/hiatus/OPENGLPROJECT/BetterShaders/build/CMakeFiles/GraphicsStuff.dir
-/home/hiatus/OPENGLPROJECT/BetterShaders/build/CMakeFiles/edit_cache.dir
-/home/hiatus/OPENGLPROJECT/BetterShaders/build/CMakeFiles/rebuild_cache.dir
