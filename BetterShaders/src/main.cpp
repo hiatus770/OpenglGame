@@ -12,21 +12,21 @@
 
 const int SRC_WIDTH = 1920;
 const int SRC_HEIGHT = 1080;
-const int CHUNK_SIZE = 10;
-const int STARS_PER_CHUNK = 100;  
+const int CHUNK_SIZE = 500;
+const int STARS_PER_CHUNK = 10000;
 const int PLANETS_PER_CHUNK = 100;
 
 #include "camera.h"
 
 // TODO
-// - make the stars into asteroids that you can interact with and fly around? do i actually want to make a game or whatever sob :sob:  planets make more sense in this case but whats the point in having 300000 of them :sob: 
-// Projectiles? Questions mark??? COnfusion??? and then maybe implement movement with the mouse so it is actually playable buster :sob: 
-// - Actually add coloring and possibly textured things please pretty please please 
-// Make small UI stuff now :sob: 
-// Pplanet chunking is next, make sure they chunk normally, then add different planet types? and then uhhh idk, make them interactive somehow :wink: 
-// CLEAN UP CLEAN UP 
-// Make the update() function for the palyer not in processInput anymore cause its really annoying in there for future use :pensive: 
-// Fix planet rendering please 
+// - make the stars into asteroids that you can interact with and fly around? do i actually want to make a game or whatever sob :sob:  planets make more sense in this case but whats the point in having 300000 of them :sob:
+// Projectiles? Questions mark??? COnfusion??? and then maybe implement movement with the mouse so it is actually playable buster :sob:
+// - Actually add coloring and possibly textured things please pretty please please
+// Make small UI stuff now :sob:
+// Pplanet chunking is next, make sure they chunk normally, then add different planet types? and then uhhh idk, make them interactive somehow :wink:
+// CLEAN UP CLEAN UP
+// Make the update() function for the palyer not in processInput anymore cause its really annoying in there for future use :pensive:
+// Fix planet rendering please
     // - Angles aren't working properly, they dont rotate correctly, once done make the chunk renderer actually work please pretty please wahoo
 
 // Sprit needed for player class
@@ -66,7 +66,7 @@ Camera camera; // Global Camera for the entire code thing :)
 #include "star.h"
 #include "starChunk.h"
 #include "planet.h"
-#include "planetChunk.h"
+// #include "planetChunk.h"
 
 // Whenever the window is changed this function is called
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
@@ -106,7 +106,7 @@ int main()
         glfwTerminate();
         return -1;
     }
-    
+
     glfwMakeContextCurrent(window);
 
     // Load GLAD function pointers so that we use the correct openGL functions
@@ -122,22 +122,34 @@ int main()
     // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetCursorPosCallback(window, mouse_callback);
 
-    // The global shader for the program 
+    // The global shader for the program
     Shader globalShader("/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shaders/vert.vs", "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/shaders/frag.fs");
 
-    // The test object 
+    // The test object
     Object object(&globalShader, shipSprite, {1.0, 1.0, 1.0, 1.0});
 
-    // Create player object 
+    // Create player object
     player.createPlayerObject(&globalShader);
 
     Star cameraStar(&globalShader, glm::vec3(1.0f, 1.0f, 1.0f));
     Star directionStar(&globalShader, glm::vec3(1.0f, 1.0f, 1.0f));
 
-    Planet planet(&globalShader, glm::vec3(4.0f, 4.0f, 4.0f), {1.0f, 0.0f, 0.0f}); 
-    planet.rotAxis = glm::vec3(1.0f, 1.0f, 0.0f); 
-    
-    std::vector<Planet> planets;  
+    StarChunk *localChunks[7];
+    localChunks[0] = new StarChunk(0,0,0);   // 0,0
+    localChunks[1] = new StarChunk(0,0,0);   // +x
+    localChunks[2] = new StarChunk(0,0,0);   // -x
+    localChunks[3] = new StarChunk(0,0,0);   // +z
+    localChunks[4] = new StarChunk(0,0,0);   // -z
+    localChunks[5] = new StarChunk(0,0,0);   // +y
+    localChunks[6] = new StarChunk(0,0,0);   // -y
+    for(int i = 0; i < 7; i++){
+        localChunks[i]->init(glm::vec3(0.0f, 0.0f, 0.0f));
+    }
+
+    Planet planet(&globalShader, glm::vec3(4.0f, 4.0f, 4.0f), {1.0f, 0.0f, 0.0f});
+    planet.rotAxis = glm::vec3(1.0f, 1.0f, 0.0f);
+
+    std::vector<Planet> planets;
 
     // for(int i = 0; i < 100; i++){
         // Planet newPlanet(&globalShader, glm::vec3(rand()%300, rand()%300, rand()%300),glm::normalize(glm::vec3(rand()%300, rand()%300, rand()%300)), {0.0f, 1.0f, 1.0f});
@@ -145,8 +157,8 @@ int main()
 
     // }
 
-    glm::vec3 playerChunkCoords(1.0f, 1.0f, 1.0f); 
-    glm::vec3 lastPlayerChunkCoords(2.0f, 1.0f, 1.0f); 
+    glm::vec3 playerChunkCoords(1.0f, 1.0f, 1.0f);
+    glm::vec3 lastPlayerChunkCoords(2.0f, 1.0f, 1.0f);
 
     // Main Loop of the function
     while (!glfwWindowShouldClose(window))
@@ -163,25 +175,40 @@ int main()
         // Process input call
         processInput(window);
 
-        // Update the player chunk coordinates 
-        playerChunkCoords.x = floor(player.position.x / CHUNK_SIZE); 
-        playerChunkCoords.y = floor(player.position.y / CHUNK_SIZE); 
-        playerChunkCoords.z = floor(player.position.z / CHUNK_SIZE); 
-        
-        globalShader.setVec3("cameraPos", {player.getCameraPosition().x, player.getCameraPosition().y, player.getCameraPosition().z}); 
-        
-        // Debug purposes for showing where the camera is! 
+        // Calculate Player chunk coord difference
+        playerChunkCoords.x = floor(player.position.x / CHUNK_SIZE);
+        playerChunkCoords.y = floor(player.position.y / CHUNK_SIZE);
+        playerChunkCoords.z = floor(player.position.z / CHUNK_SIZE);
+
+        if (playerChunkCoords.x - lastPlayerChunkCoords.x != 0 || playerChunkCoords.z != lastPlayerChunkCoords.z || playerChunkCoords.y != lastPlayerChunkCoords.y){
+            // We changed position between frames make new StarChunk
+            // chunk->init(playerChunkCoords);
+            localChunks[0]->init(playerChunkCoords + glm::vec3{0.0, 0.0, 0.0});
+            localChunks[1]->init(playerChunkCoords + glm::vec3{1.0, 0.0, 0.0});
+            localChunks[2]->init(playerChunkCoords + glm::vec3{-1.0, 0.0, 0.0});
+            localChunks[3]->init(playerChunkCoords + glm::vec3{0.0, 0.0, 1.0});
+            localChunks[4]->init(playerChunkCoords + glm::vec3{0.0, 0.0, -1.0});
+            localChunks[5]->init(playerChunkCoords + glm::vec3{0.0, 1.0, 0.0});
+            localChunks[6]->init(playerChunkCoords + glm::vec3{0.0, -1.0, 0.0});
+        }
+
+        globalShader.setVec3("cameraPos", {player.getCameraPosition().x, player.getCameraPosition().y, player.getCameraPosition().z});
+
+        // Debug purposes for showing where the camera is!
         cameraStar.position = player.getCameraPosition();
         cameraStar.render(0.1, camera.getViewMatrix(), camera.getProjectionMatrix());
 
-        // All render calls should go here! 
+        // All render calls should go here!
         player.render();
-        // for(int i = 0; i < planets.size(); i++){
-        //     planets[i].render(0.1, camera.getViewMatrix(), camera.getProjectionMatrix()); 
-        // }
-        planet.render(0.1, camera.getViewMatrix(), camera.getProjectionMatrix()); 
+        for(int i = 0; i < 7; i++){
+            localChunks[i]->render();
+        }
+        for(int i = 0; i < planets.size(); i++){
+            planets[i].render(0.1, camera.getViewMatrix(), camera.getProjectionMatrix());
+        }
+        planet.render(0.1, camera.getViewMatrix(), camera.getProjectionMatrix());
 
-        lastPlayerChunkCoords = playerChunkCoords; 
+        lastPlayerChunkCoords = playerChunkCoords;
 
         glfwSwapBuffers(window); // Swaps the color buffer that is used to render to during this render iteration and show it ot the output screen
         glfwPollEvents();        // Checks if any events are triggered, updates the window state andcalls the corresponding functions
@@ -197,7 +224,7 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
     glViewport(0, 0, width, height);
 }
 
-// Currently no mouse controls are enabled 
+// Currently no mouse controls are enabled
 void mouse_callback(GLFWwindow *window, double xposIn, double yposIn)
 {
     // float xpos = static_cast<float>(xposIn);
@@ -234,9 +261,9 @@ void mouse_callback(GLFWwindow *window, double xposIn, double yposIn)
 }
 
 /**
- * @brief Handles all user input given the window object, currently handles player movement 
- * 
- * @param window 
+ * @brief Handles all user input given the window object, currently handles player movement
+ *
+ * @param window
  */
 void processInput(GLFWwindow *window)
 {
@@ -293,12 +320,12 @@ void processInput(GLFWwindow *window)
     }
 
     // Update calls
-    player.update(); 
-    
+    player.update();
+
     camera.position = player.getCameraPosition();
     camera.direction = player.getCameraDirection();
     camera.cameraUp = player.getCameraUp();
-    camera.projection =  glm::perspective(glm::radians(60.0f), (float)SRC_WIDTH/SRC_HEIGHT, 0.1f, 1000.0f); 
+    camera.projection =  glm::perspective(glm::radians(60.0f), (float)SRC_WIDTH/SRC_HEIGHT, 0.1f, 1000.0f);
 
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
     {
@@ -306,8 +333,8 @@ void processInput(GLFWwindow *window)
         camera.position = player.position + glm::vec3(20.0f, 20.0f, 20.0f);
         camera.direction = glm::vec3(-1.0f, -1.0f, -1.0f);
         camera.cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-        camera.projection =  glm::perspective(glm::radians(90.0f), (float)SRC_WIDTH/SRC_HEIGHT, 0.1f, 100.0f); 
+        camera.projection =  glm::perspective(glm::radians(90.0f), (float)SRC_WIDTH/SRC_HEIGHT, 0.1f, 100.0f);
     }
 
-    
+
 }

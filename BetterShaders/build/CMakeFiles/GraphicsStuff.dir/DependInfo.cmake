@@ -8,8 +8,9 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/glad.c" "CMakeFiles/GraphicsStuff.dir/src/glad.c.o" "gcc" "CMakeFiles/GraphicsStuff.dir/src/glad.c.o.d"
-  "/home/hiatus/Documents/OPENGLPROJECT/BetterShaders/src/main.cpp" "CMakeFiles/GraphicsStuff.dir/src/main.cpp.o" "gcc" "CMakeFiles/GraphicsStuff.dir/src/main.cpp.o.d"
+  "/home/hiatus/OPENGLPROJECT/BetterShaders/src/glad.c" "CMakeFiles/GraphicsStuff.dir/src/glad.c.o" "gcc" "CMakeFiles/GraphicsStuff.dir/src/glad.c.o.d"
+  "/home/hiatus/OPENGLPROJECT/BetterShaders/src/main.cpp" "CMakeFiles/GraphicsStuff.dir/src/main.cpp.o" "gcc" "CMakeFiles/GraphicsStuff.dir/src/main.cpp.o.d"
+  "" "GraphicsStuff" "gcc" "CMakeFiles/GraphicsStuff.dir/link.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

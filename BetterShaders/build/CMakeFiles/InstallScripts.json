@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/hiatus/OPENGLPROJECT/BetterShaders/build/cmake_install.cmake"
+	],
+	"Parallel" : false
+}
